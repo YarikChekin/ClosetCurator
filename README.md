@@ -15,9 +15,14 @@ An intelligent iOS app that digitizes your closet and provides personalized outf
 
 - 👔 **Smart Outfit Management**
   - AI-powered outfit recommendations
-  - Style preference learning
   - Outfit history and favorites
   - Seasonal outfit organization
+
+- 🎨 **Style Preference Learning**
+  - Create style boards from inspiration images and screenshots
+  - AI analysis of styles, colors, and patterns
+  - Personalized recommendations based on style preferences
+  - Gradual expansion of style comfort zone
 
 - 🔄 **Feedback Loop**
   - User feedback on recommendations
@@ -48,15 +53,28 @@ ClosetCurator/
 │   │   └── Views/
 │   ├── Outfits/
 │   │   └── Views/
-│   └── Recommendations/
-│       └── Views/
+│   ├── Recommendations/
+│   │   └── Views/
+│   └── Style/
+│       ├── Views/
+│       │   ├── StyleBoardView.swift
+│       │   ├── StyleBoardDetailView.swift
+│       │   ├── CreateStyleBoardView.swift
+│       │   └── AddFromScreenshotView.swift
+│       └── Services/
+│           ├── StyleAnalysisService.swift
+│           └── StyleRecommendationService.swift
 ├── Core/
 │   ├── ML/
 │   │   └── ClothingDetectionService.swift
 │   ├── Data/
 │   │   └── Models/
 │   │       ├── ClothingItem.swift
-│   │       └── Outfit.swift
+│   │       ├── Outfit.swift
+│   │       ├── StylePreference.swift
+│   │       ├── StyleBoard.swift
+│   │       ├── StyleBoardItem.swift
+│   │       └── StyleFeedback.swift
 │   └── Services/
 │       ├── ImageService.swift
 │       └── WeatherService.swift
@@ -73,16 +91,23 @@ ClosetCurator/
 ## Key Features Implementation
 
 ### SwiftData Models
-The app uses SwiftData for persistence, with `ClothingItem` and `Outfit` as the main model objects with bidirectional relationships.
+The app uses SwiftData for persistence, with models including `ClothingItem`, `Outfit`, `StylePreference`, `StyleBoard`, `StyleBoardItem`, and `StyleFeedback` with appropriate relationships.
 
 ### Image Processing
-`ImageService` handles saving and retrieving images for clothing items.
+`ImageService` handles saving and retrieving images for clothing items and style boards.
 
 ### ML Classification
-`ClothingDetectionService` provides basic clothing item detection (currently uses mock data, but can be extended to use a real ML model).
+`ClothingDetectionService` provides clothing item detection, while `StyleAnalysisService` analyzes style elements in images.
 
 ### Weather-Based Recommendations
 The app filters outfits based on temperature suitability using the `WeatherService`.
+
+### Style Preference Learning
+The style system allows users to:
+- Create style boards from screenshots and images
+- Analyze styles using AI to extract colors, patterns, and clothing types
+- Receive personalized recommendations that gradually expand style comfort zones
+- Provide feedback to improve future recommendations
 
 ## Development Setup
 
