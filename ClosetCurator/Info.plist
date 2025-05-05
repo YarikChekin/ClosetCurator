@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Closet Curator needs your location to provide weather-based outfit recommendations.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Closet Curator needs access to your photo library to add clothing items to your digital closet.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Closet Curator needs camera access to take photos of your clothing items.</string>
+</dict>
+</plist> 
