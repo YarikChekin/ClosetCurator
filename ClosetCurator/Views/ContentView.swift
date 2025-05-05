@@ -19,17 +19,23 @@ struct ContentView: View {
                 }
                 .tag(1)
             
+            StyleBoardView()
+                .tabItem {
+                    Label("Style Boards", systemImage: "square.grid.2x2")
+                }
+                .tag(2)
+            
             RecommendationsView()
                 .tabItem {
                     Label("Recommendations", systemImage: "wand.and.stars")
                 }
-                .tag(2)
+                .tag(3)
             
             SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gear")
                 }
-                .tag(3)
+                .tag(4)
         }
         .task {
             await weatherService.getCurrentWeather()
@@ -242,5 +248,11 @@ struct SettingsView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: [ClothingItem.self, Outfit.self])
+        .modelContainer(for: [
+            ClothingItem.self,
+            Outfit.self,
+            StylePreference.self,
+            StyleBoard.self,
+            StyleBoardItem.self
+        ])
 } 

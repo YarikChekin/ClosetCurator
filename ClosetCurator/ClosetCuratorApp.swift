@@ -9,6 +9,13 @@ struct ClosetCuratorApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: [ClothingItem.self, Outfit.self])
+        .modelContainer(for: [
+            ClothingItem.self,
+            Outfit.self,
+            StylePreference.self,
+            StyleBoard.self,
+            StyleBoardItem.self,
+            StyleFeedback.self
+        ])
     }
 } 
