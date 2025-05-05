@@ -1,13 +1,24 @@
 import SwiftUI
 import SwiftData
+import UserNotifications
 
 @main
 struct ClosetCuratorApp: App {
-    @StateObject private var weatherService = WeatherService()
+    @StateObject private var onboardingManager = OnboardingManager.shared
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Group {
+                if onboardingManager.hasCompletedOnboarding {
+                    ContentView()
+                } else {
+                    OnboardingView()
+                }
+            }
+            .onAppear {
+                // Request notification permissions
+                requestNotificationPermissions()
+            }
         }
         .modelContainer(for: [
             ClothingItem.self,
@@ -17,5 +28,13 @@ struct ClosetCuratorApp: App {
             StyleBoardItem.self,
             StyleFeedback.self
         ])
+    }
+    
+    private func requestNotificationPermissions() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+            if let error = error {
+                print("Error requesting notification authorization: \(error)")
+            }
+        }
     }
 } 
