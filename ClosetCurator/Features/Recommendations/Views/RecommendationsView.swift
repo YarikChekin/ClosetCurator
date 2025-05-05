@@ -1,6 +1,5 @@
 import SwiftUI
 import SwiftData
-import WeatherKit
 import CoreLocation
 
 struct RecommendationsView: View {
@@ -10,7 +9,6 @@ struct RecommendationsView: View {
     @StateObject private var weatherService = WeatherService()
     @State private var isLoading = false
     @State private var recommendedOutfits: [Outfit] = []
-    @State private var locationManager = CLLocationManager()
     @State private var showingStylePreferenceSetup = false
     
     // Get the user's style preference or nil if none exists
@@ -117,18 +115,24 @@ struct RecommendationsView: View {
                         Image(systemName: "tshirt")
                     }
                 }
+                
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        Task {
+                            await refreshData()
+                        }
+                    } label: {
+                        Image(systemName: "arrow.clockwise")
+                    }
+                }
             }
             .task {
-                await loadWeather()
-                await generateRecommendations()
+                await refreshData()
             }
             .refreshable {
-                await loadWeather()
-                await generateRecommendations()
+                await refreshData()
             }
             .onAppear {
-                locationManager.requestWhenInUseAuthorization()
-                
                 // Create a default style preference if none exists
                 if userStylePreference == nil {
                     let newPreference = StylePreference(
@@ -152,30 +156,44 @@ struct RecommendationsView: View {
         }
     }
     
-    private func loadWeather() async {
+    private func refreshData() async {
         isLoading = true
         defer { isLoading = false }
         
+        // Fetch weather data
         await weatherService.getCurrentWeather()
+        
+        // Generate recommendations based on current weather
+        await generateRecommendations()
     }
     
     private func generateRecommendations() async {
         guard let weather = weatherService.currentWeather else { return }
         
         // Convert weather to weather tags
-        let weatherTags = [
-            weather.temperature.map { temp in
-                if temp >= 25 { return WeatherTag.hot }
-                else if temp >= 18 { return WeatherTag.warm }
-                else if temp >= 10 { return WeatherTag.cool }
-                else { return WeatherTag.cold }
-            },
-            weather.condition.map { condition in
-                if condition.lowercased().contains("rain") { return WeatherTag.rainy }
-                else if condition.lowercased().contains("snow") { return WeatherTag.snowy }
-                else { return nil }
+        var weatherTags: [WeatherTag] = []
+        
+        // Temperature-based tags
+        if let temp = weather.temperature {
+            if temp >= 30 {
+                weatherTags.append(.hot)
+            } else if temp >= 20 {
+                weatherTags.append(.warm)
+            } else if temp >= 10 {
+                weatherTags.append(.cool)
+            } else {
+                weatherTags.append(.cold)
             }
-        ].compactMap { $0 }.compactMap { $0 }
+        }
+        
+        // Condition-based tags
+        if let condition = weather.condition?.lowercased() {
+            if condition.contains("rain") || condition.contains("drizzle") || condition.contains("shower") {
+                weatherTags.append(.rainy)
+            } else if condition.contains("snow") || condition.contains("blizzard") {
+                weatherTags.append(.snowy)
+            }
+        }
         
         do {
             recommendedOutfits = try await RecommendationService.shared.generateRecommendations(
@@ -202,7 +220,7 @@ struct RecommendationsView: View {
             context: StyleFeedback.FeedbackContext(
                 occasion: nil,
                 weather: weather,
-                location: nil,
+                location: weather.location,
                 time: Date(),
                 adventureLevel: nil
             ),
@@ -224,6 +242,61 @@ struct RecommendationsView: View {
             await generateRecommendations()
         } catch {
             print("Error processing feedback: \(error)")
+        }
+    }
+}
+
+struct WeatherSummaryView: View {
+    let weather: Weather
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                WeatherIconView(iconCode: weather.icon ?? "01d")
+                    .frame(width: 40, height: 40)
+                
+                Text("\(Int(weather.temperature ?? 0))°C")
+                    .font(.title)
+            }
+            
+            Text(weather.condition ?? "Unknown")
+                .font(.subheadline)
+            
+            Text("Location: \(weather.location ?? "Current Location")")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            
+            if let minTemp = weather.tempMin, let maxTemp = weather.tempMax {
+                Text("Min: \(Int(minTemp))°C  Max: \(Int(maxTemp))°C")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .padding(.vertical, 8)
+    }
+}
+
+struct WeatherIconView: View {
+    let iconCode: String
+    
+    var body: some View {
+        AsyncImage(url: URL(string: "https://openweathermap.org/img/wn/\(iconCode)@2x.png")) { phase in
+            switch phase {
+            case .empty:
+                ProgressView()
+            case .success(let image):
+                image
+                    .resizable()
+                    .scaledToFit()
+            case .failure:
+                Image(systemName: "cloud.fill")
+                    .resizable()
+                    .scaledToFit()
+            @unknown default:
+                Image(systemName: "cloud.fill")
+                    .resizable()
+                    .scaledToFit()
+            }
         }
     }
 }
@@ -366,47 +439,6 @@ struct StylePreferenceSetupView: View {
         }
         
         try? modelContext.save()
-    }
-}
-
-struct WeatherSummaryView: View {
-    let weather: Weather
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Image(systemName: getWeatherIcon(for: weather.condition ?? ""))
-                    .font(.title)
-                Text("\(Int(weather.temperature ?? 0))°")
-                    .font(.title)
-            }
-            
-            Text(weather.condition ?? "Unknown")
-                .font(.subheadline)
-            
-            Text("Location: \(weather.location ?? "Current Location")")
-                .font(.caption)
-                .foregroundColor(.secondary)
-        }
-        .padding(.vertical, 8)
-    }
-    
-    private func getWeatherIcon(for condition: String) -> String {
-        let condition = condition.lowercased()
-        
-        if condition.contains("rain") || condition.contains("drizzle") {
-            return "cloud.rain"
-        } else if condition.contains("snow") {
-            return "cloud.snow"
-        } else if condition.contains("cloud") {
-            return "cloud"
-        } else if condition.contains("clear") || condition.contains("sun") {
-            return "sun.max"
-        } else if condition.contains("partly") {
-            return "cloud.sun"
-        } else {
-            return "thermometer"
-        }
     }
 }
 
