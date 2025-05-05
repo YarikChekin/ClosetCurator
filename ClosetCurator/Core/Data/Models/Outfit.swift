@@ -5,20 +5,17 @@ import SwiftData
 final class Outfit {
     var id: UUID
     var name: String
-    var items: [ClothingItem]
+    @Relationship(inverse: \ClothingItem.outfits) var items: [ClothingItem]
     var dateCreated: Date
     var lastWorn: Date?
     var wearCount: Int
     var favorite: Bool
     var notes: String?
-    var seasonality: Set<ClothingItem.Season>
-    var styleTags: Set<String>
-    var temperatureRange: ClosedRange<Double>?
-    var weatherConditions: Set<ClothingItem.WeatherCondition>
-    var userRating: Int?
-    var aiConfidence: Double?
-    var rating: Int?
+    var minTemperature: Double?
+    var maxTemperature: Double?
     var weatherTags: [WeatherTag]
+    var styleTags: [StyleTag]
+    var rating: Int?
     
     init(
         id: UUID = UUID(),
@@ -29,14 +26,11 @@ final class Outfit {
         wearCount: Int = 0,
         favorite: Bool = false,
         notes: String? = nil,
-        seasonality: Set<ClothingItem.Season> = [],
-        styleTags: Set<String> = [],
-        temperatureRange: ClosedRange<Double>? = nil,
-        weatherConditions: Set<ClothingItem.WeatherCondition> = [],
-        userRating: Int? = nil,
-        aiConfidence: Double? = nil,
-        rating: Int? = nil,
-        weatherTags: [WeatherTag] = []
+        minTemperature: Double? = nil,
+        maxTemperature: Double? = nil,
+        weatherTags: [WeatherTag] = [],
+        styleTags: [StyleTag] = [],
+        rating: Int? = nil
     ) {
         self.id = id
         self.name = name
@@ -46,46 +40,26 @@ final class Outfit {
         self.wearCount = wearCount
         self.favorite = favorite
         self.notes = notes
-        self.seasonality = seasonality
-        self.styleTags = styleTags
-        self.temperatureRange = temperatureRange
-        self.weatherConditions = weatherConditions
-        self.userRating = userRating
-        self.aiConfidence = aiConfidence
-        self.rating = rating
+        self.minTemperature = minTemperature
+        self.maxTemperature = maxTemperature
         self.weatherTags = weatherTags
+        self.styleTags = styleTags
+        self.rating = rating
     }
     
     // MARK: - Weather Compatibility
     
     func isSuitableForTemperature(_ temperature: Double) -> Bool {
-        guard let range = temperatureRange else { return true }
-        return range.contains(temperature)
-    }
-    
-    func isSuitableForWeather(_ conditions: Set<ClothingItem.WeatherCondition>) -> Bool {
-        guard !weatherConditions.isEmpty else { return true }
-        return !conditions.isDisjoint(with: weatherConditions)
+        guard let min = minTemperature, let max = maxTemperature else { return true }
+        return temperature >= min && temperature <= max
     }
     
     // MARK: - Usage Tracking
     
-    func incrementWearCount() {
+    func markAsWorn() {
         wearCount += 1
         lastWorn = Date()
-        items.forEach { $0.lastWorn = Date() }
-    }
-    
-    // MARK: - Rating
-    
-    func updateRating(_ rating: Int) {
-        userRating = rating
-    }
-    
-    // MARK: - AI Confidence
-    
-    func updateAIConfidence(_ confidence: Double) {
-        aiConfidence = confidence
+        items.forEach { $0.markAsWorn() }
     }
     
     // MARK: - Validation
@@ -100,10 +74,5 @@ final class Outfit {
         let hasBottom = categories.contains(.bottoms) || categories.contains(.dresses)
         
         return hasTop && hasBottom
-    }
-    
-    func markAsWorn() {
-        lastWorn = Date()
-        items.forEach { $0.lastWorn = Date() }
     }
 } 

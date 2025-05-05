@@ -1,24 +1,25 @@
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
-    @StateObject private var viewModel = ClosetViewModel()
+    @StateObject private var weatherService = WeatherService()
     @State private var selectedTab = 0
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            ClosetView(viewModel: viewModel)
+            ClosetView()
                 .tabItem {
                     Label("Closet", systemImage: "tshirt")
                 }
                 .tag(0)
             
-            OutfitsView(viewModel: viewModel)
+            OutfitsView()
                 .tabItem {
                     Label("Outfits", systemImage: "person.crop.rectangle.stack")
                 }
                 .tag(1)
             
-            RecommendationsView(viewModel: viewModel)
+            RecommendationsView()
                 .tabItem {
                     Label("Recommendations", systemImage: "wand.and.stars")
                 }
@@ -31,24 +32,29 @@ struct ContentView: View {
                 .tag(3)
         }
         .task {
-            await viewModel.updateWeather()
+            await weatherService.getCurrentWeather()
         }
     }
 }
 
 struct ClosetView: View {
-    @ObservedObject var viewModel: ClosetViewModel
+    @Environment(\.modelContext) private var modelContext
+    @Query private var items: [ClothingItem]
     @State private var showingAddItem = false
+    @State private var selectedCategory: ClothingCategory?
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
-                ForEach(viewModel.clothingItems) { item in
-                    ClothingItemRow(item: item)
-                }
-                .onDelete { indexSet in
-                    indexSet.forEach { index in
-                        viewModel.deleteClothingItem(viewModel.clothingItems[index])
+                ForEach(ClothingCategory.allCases, id: \.self) { category in
+                    Section(category.rawValue.capitalized) {
+                        let categoryItems = items.filter { $0.category == category }
+                        ForEach(categoryItems) { item in
+                            ClothingItemRow(item: item)
+                        }
+                        .onDelete { indexSet in
+                            deleteItems(categoryItems, at: indexSet)
+                        }
                     }
                 }
             }
@@ -56,13 +62,19 @@ struct ClosetView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { showingAddItem = true }) {
-                        Image(systemName: "plus")
+                        Label("Add Item", systemImage: "plus")
                     }
                 }
             }
             .sheet(isPresented: $showingAddItem) {
-                AddClothingItemView(viewModel: viewModel)
+                AddClothingItemView()
             }
+        }
+    }
+    
+    private func deleteItems(_ items: [ClothingItem], at offsets: IndexSet) {
+        for index in offsets {
+            modelContext.delete(items[index])
         }
     }
 }
@@ -72,8 +84,8 @@ struct ClothingItemRow: View {
     
     var body: some View {
         HStack {
-            if let imageData = item.imageData,
-               let uiImage = UIImage(data: imageData) {
+            if let imageURL = item.imageURL,
+               let uiImage = UIImage(contentsOfFile: imageURL.path) {
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFill()
@@ -84,7 +96,7 @@ struct ClothingItemRow: View {
             VStack(alignment: .leading) {
                 Text(item.name)
                     .font(.headline)
-                Text(item.category)
+                Text(item.category.rawValue.capitalized)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -93,16 +105,35 @@ struct ClothingItemRow: View {
 }
 
 struct OutfitsView: View {
-    @ObservedObject var viewModel: ClosetViewModel
+    @Query private var outfits: [Outfit]
+    @State private var showingAddOutfit = false
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
-                ForEach(viewModel.recommendedOutfits) { outfit in
+                ForEach(outfits) { outfit in
                     OutfitRow(outfit: outfit)
                 }
+                .onDelete(perform: deleteOutfits)
             }
             .navigationTitle("My Outfits")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { showingAddOutfit = true }) {
+                        Label("Create Outfit", systemImage: "plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $showingAddOutfit) {
+                CreateOutfitView()
+            }
+        }
+    }
+    
+    private func deleteOutfits(at offsets: IndexSet) {
+        let outfitsToDelete = offsets.map { outfits[$0] }
+        for outfit in outfitsToDelete {
+            modelContext.delete(outfit)
         }
     }
 }
@@ -114,31 +145,54 @@ struct OutfitRow: View {
         VStack(alignment: .leading) {
             Text(outfit.name)
                 .font(.headline)
-            Text(outfit.formattedDateCreated)
+            
+            Text(formattedDate(outfit.dateCreated))
                 .font(.subheadline)
                 .foregroundColor(.secondary)
         }
     }
+    
+    private func formattedDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.string(from: date)
+    }
 }
 
 struct RecommendationsView: View {
-    @ObservedObject var viewModel: ClosetViewModel
+    @StateObject private var weatherService = WeatherService()
+    @Query private var outfits: [Outfit]
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
-                if let weather = viewModel.currentWeather {
+                if let weather = weatherService.currentWeather {
                     WeatherInfoView(weather: weather)
                 }
                 
-                ForEach(viewModel.recommendedOutfits) { outfit in
+                ForEach(recommendedOutfits) { outfit in
                     OutfitRow(outfit: outfit)
                 }
             }
             .navigationTitle("Recommendations")
             .refreshable {
-                await viewModel.updateWeather()
+                await weatherService.getCurrentWeather()
             }
+        }
+    }
+    
+    private var recommendedOutfits: [Outfit] {
+        guard let weather = weatherService.currentWeather else { return [] }
+        
+        return outfits.filter { outfit in
+            // Filter outfits based on current weather
+            if let temperature = weather.temperature {
+                if let range = outfit.temperatureRange, !range.contains(temperature) {
+                    return false
+                }
+            }
+            
+            return true
         }
     }
 }
@@ -150,8 +204,12 @@ struct WeatherInfoView: View {
         VStack(alignment: .leading) {
             Text("Current Weather")
                 .font(.headline)
-            Text("Temperature: \(weather.temperature)°")
-            Text("Conditions: \(weather.condition)")
+            if let temperature = weather.temperature {
+                Text("Temperature: \(Int(temperature))°")
+            }
+            if let condition = weather.condition {
+                Text("Conditions: \(condition)")
+            }
         }
         .padding()
         .background(Color.secondary.opacity(0.1))
@@ -184,4 +242,5 @@ struct SettingsView: View {
 
 #Preview {
     ContentView()
+        .modelContainer(for: [ClothingItem.self, Outfit.self])
 } 

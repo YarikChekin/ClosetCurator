@@ -16,8 +16,7 @@ final class ClothingItem {
     var dateAdded: Date
     var imageURL: URL?
     var temperatureRange: ClosedRange<Double>?
-    var seasonality: Set<Season>
-    var styleTags: Set<String>
+    @Relationship(deleteRule: .cascade) var outfits: [Outfit]?
     var wearCount: Int
     var lastWorn: Date?
     var favorite: Bool
@@ -26,26 +25,8 @@ final class ClothingItem {
     // Weather-related properties
     var minTemperature: Double?
     var maxTemperature: Double?
-    var weatherConditions: Set<WeatherCondition>
-    
     var weatherTags: [WeatherTag]
-    
-    enum Category: String, Codable, CaseIterable {
-        case tops = "Tops"
-        case bottoms = "Bottoms"
-        case dresses = "Dresses"
-        case outerwear = "Outerwear"
-        case shoes = "Shoes"
-        case accessories = "Accessories"
-    }
-    
-    enum Season: String, Codable, CaseIterable {
-        case spring, summer, fall, winter
-    }
-    
-    enum WeatherCondition: String, Codable, CaseIterable {
-        case sunny, rainy, cloudy, snowy, windy
-    }
+    var styleTags: [StyleTag]
     
     init(
         id: UUID = UUID(),
@@ -59,15 +40,13 @@ final class ClothingItem {
         dateAdded: Date = Date(),
         imageURL: URL? = nil,
         temperatureRange: ClosedRange<Double>? = nil,
-        seasonality: Set<Season> = [],
-        styleTags: Set<String> = [],
+        outfits: [Outfit]? = nil,
         wearCount: Int = 0,
         lastWorn: Date? = nil,
         favorite: Bool = false,
         mlConfidence: Double? = nil,
         minTemperature: Double? = nil,
         maxTemperature: Double? = nil,
-        weatherConditions: Set<WeatherCondition> = [],
         weatherTags: [WeatherTag] = [],
         styleTags: [StyleTag] = []
     ) {
@@ -82,45 +61,33 @@ final class ClothingItem {
         self.dateAdded = dateAdded
         self.imageURL = imageURL
         self.temperatureRange = temperatureRange
-        self.seasonality = seasonality
-        self.styleTags = styleTags
+        self.outfits = outfits
         self.wearCount = wearCount
         self.lastWorn = lastWorn
         self.favorite = favorite
         self.mlConfidence = mlConfidence
         self.minTemperature = minTemperature
         self.maxTemperature = maxTemperature
-        self.weatherConditions = weatherConditions
         self.weatherTags = weatherTags
+        self.styleTags = styleTags
     }
     
     // MARK: - Weather Compatibility
     
     func isSuitableForTemperature(_ temperature: Double) -> Bool {
-        guard let range = temperatureRange else { return true }
-        return range.contains(temperature)
-    }
-    
-    func isSuitableForWeather(_ conditions: Set<WeatherCondition>) -> Bool {
-        guard !weatherConditions.isEmpty else { return true }
-        return !conditions.isDisjoint(with: weatherConditions)
-    }
-    
-    // MARK: - ML Analysis
-    
-    func updateMLConfidence(_ confidence: Double) {
-        self.mlConfidence = confidence
+        guard let minTemp = minTemperature, let maxTemp = maxTemperature else { return true }
+        return temperature >= minTemp && temperature <= maxTemp
     }
     
     // MARK: - Usage Tracking
     
-    func incrementWearCount() {
+    func markAsWorn() {
         wearCount += 1
         lastWorn = Date()
     }
 }
 
-enum ClothingCategory: String, Codable {
+enum ClothingCategory: String, Codable, CaseIterable {
     case tops
     case bottoms
     case dresses
@@ -129,7 +96,7 @@ enum ClothingCategory: String, Codable {
     case accessories
 }
 
-enum WeatherTag: String, Codable {
+enum WeatherTag: String, Codable, CaseIterable {
     case hot
     case warm
     case cool
@@ -138,7 +105,7 @@ enum WeatherTag: String, Codable {
     case snowy
 }
 
-enum StyleTag: String, Codable {
+enum StyleTag: String, Codable, CaseIterable {
     case casual
     case formal
     case business

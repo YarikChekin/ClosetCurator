@@ -10,8 +10,7 @@ An intelligent iOS app that digitizes your closet and provides personalized outf
   - Smart tagging and metadata extraction
 
 - 🌤️ **Weather-Aware Recommendations**
-  - Integration with WeatherKit for real-time weather data
-  - Location-based weather forecasts
+  - Integration with weather services for forecast data
   - Temperature-appropriate outfit suggestions
 
 - 👔 **Smart Outfit Management**
@@ -23,14 +22,13 @@ An intelligent iOS app that digitizes your closet and provides personalized outf
 - 🔄 **Feedback Loop**
   - User feedback on recommendations
   - Style preference refinement
-  - Machine learning model improvement
 
 ## Technical Stack
 
 - **Frontend**: SwiftUI (iOS 17+)
 - **AI/ML**: Vision, Core ML
-- **Weather**: WeatherKit
 - **Data Persistence**: SwiftData
+- **Architecture**: SwiftUI + SwiftData
 - **Networking**: Async/Await, URLSession
 - **Testing**: XCTest, XCUITest
 
@@ -39,53 +37,52 @@ An intelligent iOS app that digitizes your closet and provides personalized outf
 - iOS 17.0+
 - Xcode 15.0+
 - Swift 5.9+
-- Apple Developer Account (for WeatherKit)
 
 ## Project Structure
 
 ```
 ClosetCurator/
-├── App/
-│   ├── ClosetCuratorApp.swift
-│   └── AppDelegate.swift
+├── ClosetCuratorApp.swift (Main app entry point)
 ├── Features/
 │   ├── Closet/
-│   │   ├── Views/
-│   │   ├── ViewModels/
-│   │   └── Models/
+│   │   └── Views/
 │   ├── Outfits/
-│   │   ├── Views/
-│   │   ├── ViewModels/
-│   │   └── Models/
-│   ├── Weather/
-│   │   ├── Views/
-│   │   ├── ViewModels/
-│   │   └── Services/
+│   │   └── Views/
 │   └── Recommendations/
-│       ├── Views/
-│       ├── ViewModels/
-│       └── Services/
+│       └── Views/
 ├── Core/
 │   ├── ML/
-│   │   ├── Models/
-│   │   └── Services/
+│   │   └── ClothingDetectionService.swift
 │   ├── Data/
-│   │   ├── Models/
-│   │   └── Services/
-│   └── Network/
-│       └── Services/
-└── Utils/
-    ├── Extensions/
-    └── Helpers/
+│   │   └── Models/
+│   │       ├── ClothingItem.swift
+│   │       └── Outfit.swift
+│   └── Services/
+│       ├── ImageService.swift
+│       └── WeatherService.swift
+└── Views/
+    └── ContentView.swift
 ```
 
 ## Getting Started
 
 1. Clone the repository
 2. Open `ClosetCurator.xcodeproj` in Xcode
-3. Set up your Apple Developer account credentials
-4. Configure WeatherKit in your Apple Developer account
-5. Build and run the project
+3. Build and run the project
+
+## Key Features Implementation
+
+### SwiftData Models
+The app uses SwiftData for persistence, with `ClothingItem` and `Outfit` as the main model objects with bidirectional relationships.
+
+### Image Processing
+`ImageService` handles saving and retrieving images for clothing items.
+
+### ML Classification
+`ClothingDetectionService` provides basic clothing item detection (currently uses mock data, but can be extended to use a real ML model).
+
+### Weather-Based Recommendations
+The app filters outfits based on temperature suitability using the `WeatherService`.
 
 ## Development Setup
 
@@ -102,7 +99,6 @@ ClosetCurator/
 3. Configure Xcode:
    - Enable "All" warnings
    - Set up code signing
-   - Configure WeatherKit capabilities
 
 ## Contributing
 

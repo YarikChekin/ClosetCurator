@@ -2,12 +2,17 @@ import SwiftUI
 import AVFoundation
 import Vision
 import PhotosUI
+import SwiftData
 
 struct CameraCaptureView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
     @StateObject private var viewModel = CameraCaptureViewModel()
     @State private var showImagePicker = false
     @State private var showCamera = false
+    @State private var itemName = ""
+    @State private var itemCategory: ClothingCategory = .tops
+    @State private var itemColor = ""
     
     var body: some View {
         NavigationStack {
@@ -16,23 +21,48 @@ struct CameraCaptureView: View {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFit()
-                        .overlay(alignment: .bottom) {
-                            HStack {
-                                Button("Retake") {
-                                    viewModel.capturedImage = nil
-                                }
-                                .buttonStyle(.bordered)
-                                
-                                Button("Save") {
-                                    Task {
-                                        await viewModel.saveItem()
-                                        dismiss()
-                                    }
-                                }
-                                .buttonStyle(.borderedProminent)
+                        .padding()
+                    
+                    VStack(spacing: 16) {
+                        TextField("Item Name", text: $itemName)
+                            .textFieldStyle(.roundedBorder)
+                        
+                        Picker("Category", selection: $itemCategory) {
+                            ForEach(ClothingCategory.allCases, id: \.self) { category in
+                                Text(category.rawValue.capitalized)
+                                    .tag(category)
                             }
-                            .padding()
                         }
+                        .pickerStyle(.menu)
+                        
+                        TextField("Color", text: $itemColor)
+                            .textFieldStyle(.roundedBorder)
+                    }
+                    .padding()
+                    
+                    HStack {
+                        Button("Retake") {
+                            viewModel.capturedImage = nil
+                        }
+                        .buttonStyle(.bordered)
+                        
+                        Spacer()
+                        
+                        Button("Save") {
+                            Task {
+                                await viewModel.saveItem(
+                                    name: itemName,
+                                    category: itemCategory,
+                                    color: itemColor,
+                                    modelContext: modelContext
+                                )
+                                dismiss()
+                            }
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .disabled(itemName.isEmpty || itemColor.isEmpty)
+                    }
+                    .padding()
                 } else {
                     VStack(spacing: 20) {
                         Button {
@@ -96,15 +126,35 @@ class CameraCaptureViewModel: ObservableObject {
     @Published var errorMessage = ""
     
     private let clothingDetectionService = ClothingDetectionService()
+    private let imageService = ImageService.shared
     
-    func saveItem() async {
+    func saveItem(name: String, category: ClothingCategory, color: String, modelContext: ModelContext) async {
         guard let image = capturedImage else { return }
         
         do {
-            if let item = try await clothingDetectionService.detectClothing(in: image) {
-                // Save to SwiftData
-                // TODO: Implement SwiftData saving
+            // Save the image to disk
+            let imageData = image.jpegData(compressionQuality: 0.8)!
+            
+            // Create new clothing item
+            let newItem = ClothingItem(
+                name: name,
+                category: category,
+                color: color,
+                dateAdded: Date()
+            )
+            
+            // Save the image and update the item's imageURL
+            newItem.imageURL = try await imageService.saveImage(imageData, for: newItem)
+            
+            // Try to detect properties using ML if available
+            if let detectedItem = try? await clothingDetectionService.detectClothing(in: image) {
+                // Use detected properties if available
+                newItem.subcategory = detectedItem.subcategory
+                newItem.mlConfidence = detectedItem.mlConfidence
             }
+            
+            // Insert into SwiftData
+            modelContext.insert(newItem)
         } catch {
             showError = true
             errorMessage = error.localizedDescription

@@ -3,54 +3,23 @@ import SwiftData
 import PhotosUI
 
 struct AddClothingItemView: View {
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
     
     @State private var name = ""
     @State private var category: ClothingCategory = .tops
-    @State private var subcategory = ""
     @State private var color = ""
     @State private var brand = ""
     @State private var size = ""
     @State private var notes = ""
-    @State private var selectedPhoto: PhotosPickerItem?
-    @State private var selectedImage: Image?
-    @State private var selectedImageData: Data?
+    @State private var selectedImage: UIImage?
     @State private var showingImagePicker = false
-    @State private var isProcessing = false
-    @State private var errorMessage: String?
-    
-    private let subcategories: [ClothingCategory: [String]] = [
-        .tops: ["T-Shirt", "Blouse", "Sweater", "Tank Top", "Button-Up"],
-        .bottoms: ["Jeans", "Pants", "Shorts", "Skirt"],
-        .dresses: ["Casual", "Formal", "Maxi", "Mini"],
-        .outerwear: ["Jacket", "Coat", "Blazer", "Cardigan"],
-        .shoes: ["Sneakers", "Boots", "Sandals", "Heels", "Flats"],
-        .accessories: ["Hat", "Scarf", "Jewelry", "Bag", "Belt"]
-    ]
+    @State private var showingCamera = false
     
     var body: some View {
         NavigationStack {
             Form {
-                Section("Photo") {
-                    if let selectedImage {
-                        selectedImage
-                            .resizable()
-                            .scaledToFit()
-                            .frame(maxHeight: 200)
-                            .frame(maxWidth: .infinity)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                    }
-                    
-                    PhotosPicker(selection: $selectedPhoto,
-                               matching: .images,
-                               photoLibrary: .shared()) {
-                        Label(selectedImage == nil ? "Add Photo" : "Change Photo",
-                              systemImage: "photo")
-                    }
-                }
-                
-                Section("Details") {
+                Section("Item Details") {
                     TextField("Name", text: $name)
                     
                     Picker("Category", selection: $category) {
@@ -60,91 +29,149 @@ struct AddClothingItemView: View {
                         }
                     }
                     
-                    if let subcategories = subcategories[category] {
-                        Picker("Type", selection: $subcategory) {
-                            Text("Select Type").tag("")
-                            ForEach(subcategories, id: \.self) { subcategory in
-                                Text(subcategory).tag(subcategory)
-                            }
-                        }
-                    }
-                    
                     TextField("Color", text: $color)
                     TextField("Brand", text: $brand)
                     TextField("Size", text: $size)
                 }
                 
-                Section("Additional Info") {
-                    TextField("Notes", text: $notes, axis: .vertical)
-                        .lineLimit(3...6)
+                Section("Notes") {
+                    TextEditor(text: $notes)
+                        .frame(minHeight: 100)
                 }
                 
-                if let errorMessage {
-                    Section {
-                        Text(errorMessage)
-                            .foregroundColor(.red)
+                Section("Photo") {
+                    HStack {
+                        Spacer()
+                        
+                        if let image = selectedImage {
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 200)
+                        } else {
+                            Image(systemName: "camera")
+                                .font(.system(size: 60))
+                                .foregroundColor(.gray)
+                                .frame(height: 200)
+                        }
+                        
+                        Spacer()
+                    }
+                    
+                    HStack {
+                        Button("Camera") {
+                            showingCamera = true
+                        }
+                        .buttonStyle(.bordered)
+                        
+                        Spacer()
+                        
+                        Button("Photo Library") {
+                            showingImagePicker = true
+                        }
+                        .buttonStyle(.bordered)
                     }
                 }
             }
-            .navigationTitle("Add Clothing Item")
+            .navigationTitle("Add Item")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
+                ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") {
                         dismiss()
                     }
                 }
                 
-                ToolbarItem(placement: .confirmationAction) {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button("Save") {
-                        Task {
-                            await saveItem()
-                        }
+                        saveItem()
                     }
-                    .disabled(name.isEmpty || isProcessing)
+                    .disabled(name.isEmpty || color.isEmpty)
                 }
             }
-            .onChange(of: selectedPhoto) { _, newValue in
-                Task {
-                    if let data = try? await newValue?.loadTransferable(type: Data.self) {
-                        selectedImageData = data
-                        if let uiImage = UIImage(data: data) {
-                            selectedImage = Image(uiImage: uiImage)
-                        }
-                    }
-                }
+            .sheet(isPresented: $showingCamera) {
+                CameraView(image: $selectedImage)
+            }
+            .sheet(isPresented: $showingImagePicker) {
+                ImagePicker(image: $selectedImage)
             }
         }
     }
     
-    private func saveItem() async {
-        isProcessing = true
-        errorMessage = nil
-        
-        do {
-            let item = ClothingItem(
+    private func saveItem() {
+        Task {
+            // Create the new item
+            let newItem = ClothingItem(
                 name: name,
                 category: category,
-                subcategory: subcategory.isEmpty ? nil : subcategory,
                 color: color,
                 brand: brand.isEmpty ? nil : brand,
                 size: size.isEmpty ? nil : size,
                 notes: notes.isEmpty ? nil : notes
             )
             
-            if let imageData = selectedImageData {
-                let processedData = try await ImageService.shared.processImage(imageData)
-                let imageURL = try await ImageService.shared.saveImage(processedData, for: item)
-                item.imageURL = imageURL
+            // Save the image if one was selected
+            if let image = selectedImage,
+               let imageData = image.jpegData(compressionQuality: 0.8) {
+                do {
+                    let imageService = ImageService.shared
+                    newItem.imageURL = try await imageService.saveImage(imageData, for: newItem)
+                } catch {
+                    print("Error saving image: \(error)")
+                }
             }
             
-            modelContext.insert(item)
+            // Save to SwiftData
+            modelContext.insert(newItem)
             dismiss()
-        } catch {
-            errorMessage = error.localizedDescription
+        }
+    }
+}
+
+struct ImagePicker: UIViewControllerRepresentable {
+    @Binding var image: UIImage?
+    @Environment(\.dismiss) var dismiss
+    
+    func makeUIViewController(context: Context) -> PHPickerViewController {
+        var config = PHPickerConfiguration()
+        config.filter = .images
+        config.selectionLimit = 1
+        
+        let picker = PHPickerViewController(configuration: config)
+        picker.delegate = context.coordinator
+        return picker
+    }
+    
+    func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {}
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+    
+    class Coordinator: NSObject, PHPickerViewControllerDelegate {
+        let parent: ImagePicker
+        
+        init(_ parent: ImagePicker) {
+            self.parent = parent
         }
         
-        isProcessing = false
+        func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+            parent.dismiss()
+            
+            guard let provider = results.first?.itemProvider,
+                  provider.canLoadObject(ofClass: UIImage.self) else { return }
+            
+            provider.loadObject(ofClass: UIImage.self) { image, error in
+                if let error = error {
+                    print("Error loading image: \(error)")
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    self.parent.image = image as? UIImage
+                }
+            }
+        }
     }
 }
 
