@@ -2,6 +2,7 @@ import Foundation
 import Vision
 import CoreML
 import UIKit
+import SwiftUI
 
 @MainActor
 class ClothingDetectionService: ObservableObject {
@@ -16,7 +17,7 @@ class ClothingDetectionService: ObservableObject {
     
     private func setupVision() {
         do {
-            // TODO: Replace with your actual ML model
+            // Using our placeholder ML model
             let config = MLModelConfiguration()
             let model = try VNCoreMLModel(for: YourClothingClassifier(configuration: config).model)
             
@@ -43,17 +44,19 @@ class ClothingDetectionService: ObservableObject {
             throw ClothingDetectionError.invalidImage
         }
         
-        let handler = VNImageRequestHandler(cgImage: cgImage)
-        try await handler.perform([classificationRequest].compactMap { $0 })
+        // In a real app, we would use Vision to process the image
+        // For now, we'll simulate the process using our placeholder model
         
-        // Process the results
-        guard let results = classificationRequest?.results as? [VNClassificationObservation],
-              let topResult = results.first else {
-            throw ClothingDetectionError.noResults
-        }
+        // Option 1: Use direct prediction from our placeholder model
+        let classifier = try YourClothingClassifier()
+        let prediction = try classifier.prediction(input: cgImage)
         
-        // Create a clothing item from the detection results
-        return try await createClothingItem(from: topResult, image: image)
+        // Create a clothing item from the simulated prediction
+        return try await createClothingItem(
+            from: prediction.classLabel,
+            confidence: prediction.probability,
+            image: image
+        )
     }
     
     private func processClassifications(for request: VNRequest) {
@@ -66,26 +69,25 @@ class ClothingDetectionService: ObservableObject {
         }
     }
     
-    private func createClothingItem(from observation: VNClassificationObservation, image: UIImage) async throws -> ClothingItem {
+    private func createClothingItem(from label: String, confidence: Double, image: UIImage) async throws -> ClothingItem {
         // Extract category from the classification
-        let category = try determineCategory(from: observation.identifier)
+        let category = try determineCategory(from: label)
         
         // Save the image to get a URL
         let imageURL = try await saveImage(image)
         
         // Create and return the clothing item
         return ClothingItem(
-            name: observation.identifier,
+            name: label,
             category: category,
             color: "Unknown", // TODO: Implement color detection
             imageURL: imageURL,
-            mlConfidence: Double(observation.confidence)
+            mlConfidence: confidence
         )
     }
     
     private func determineCategory(from identifier: String) throws -> ClothingItem.Category {
-        // TODO: Implement proper category mapping based on your ML model's output
-        // This is a placeholder implementation
+        // Map the classification to a clothing category
         switch identifier.lowercased() {
         case let str where str.contains("shirt") || str.contains("top"):
             return .tops
@@ -103,10 +105,27 @@ class ClothingDetectionService: ObservableObject {
     }
     
     private func saveImage(_ image: UIImage) async throws -> URL {
-        // TODO: Implement image saving logic
-        // This should save the image to the app's documents directory
-        // and return the URL
-        throw ClothingDetectionError.notImplemented
+        // Get the documents directory URL
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        
+        // Create a unique filename with the current date
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMddHHmmss"
+        let dateString = dateFormatter.string(from: Date())
+        let filename = "clothing_\(dateString).jpg"
+        
+        // Create the file URL
+        let fileURL = documentsDirectory.appendingPathComponent(filename)
+        
+        // Convert the image to JPEG data
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+            throw ClothingDetectionError.invalidImage
+        }
+        
+        // Write the data to the file URL
+        try imageData.write(to: fileURL)
+        
+        return fileURL
     }
 }
 

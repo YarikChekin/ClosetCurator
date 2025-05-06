@@ -22,7 +22,6 @@
 		5BD1BFA21CA104D73CB56558 /* StylePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451BAC609CC4A90385EECB59 /* StylePreference.swift */; };
 		5C0854F19526B434E576C4ED /* StyleBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E111CFF1F5540724286BD08 /* StyleBoardView.swift */; };
 		615CC9C68707A650CF282C79 /* StyleBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40E6DB3DA1156B63E420A81 /* StyleBoard.swift */; };
-		64919556F007B1260CC81961 /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B474D1518CC3735AC0D3121 /* WeatherService.swift */; };
 		674C8EF87723CDA18EBDF73D /* StyleFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA353E6D408534C50CFEC36 /* StyleFeedback.swift */; };
 		68A303990462859A53AA41C5 /* ClothingDetectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9784B23DF91B977C41ADBA60 /* ClothingDetectionService.swift */; };
 		7233C2E051FACCFC889E6297 /* SwiftUI in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1756CAF1F2D8EDDA4C6BAE53 /* SwiftUI */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -40,6 +39,7 @@
 		AE2CB9180E3155B064207E7F /* WeatherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 809DB23E5AD2AECAD66EA894 /* WeatherView.swift */; };
 		B678E54F5255E6BC622F4F3A /* OutfitSuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E06F137DF13A66769BE18B2 /* OutfitSuggestionsView.swift */; };
 		BAF2FA1837EB2D5FB7F781CD /* StyleAnalysisService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96351188BDEECAB96DBE45CF /* StyleAnalysisService.swift */; };
+		BD1C118A015C25846B76FDE7 /* ClothingClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8576F13D90CECD50A4243ACA /* ClothingClassifier.swift */; };
 		BDD8E9E79FA854C6F32DDDDD /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244B638D231143FD135F175B /* OnboardingView.swift */; };
 		C21C27646F13D8A55AB51755 /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D61A95855A98E073612F7256 /* ImageService.swift */; };
 		C4364C05B2BCBD1B100D3D75 /* OnboardingManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B33E024D2E9A2B1AA559AD63 /* OnboardingManagerTests.swift */; };
@@ -110,7 +110,6 @@
 		6A7ED26662CA585E25517D55 /* CreateOutfitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOutfitView.swift; sourceTree = "<group>"; };
 		6AC1D3EC7367F6994739DFAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6AE1AB200599746264687FD4 /* RecommendationServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationServiceTests.swift; sourceTree = "<group>"; };
-		6B474D1518CC3735AC0D3121 /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
 		6E06F137DF13A66769BE18B2 /* OutfitSuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitSuggestionsView.swift; sourceTree = "<group>"; };
 		7237759203F5B27063B8CC44 /* ClosetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosetViewModel.swift; sourceTree = "<group>"; };
 		73163CC29174ACF9E5F0FBB8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -118,6 +117,7 @@
 		772E9361DF3BDB1F10D23DFF /* OutfitServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitServiceTests.swift; sourceTree = "<group>"; };
 		809DB23E5AD2AECAD66EA894 /* WeatherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherView.swift; sourceTree = "<group>"; };
 		80A43F8C0D525EDBA036E99E /* ClosetCuratorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosetCuratorApp.swift; sourceTree = "<group>"; };
+		8576F13D90CECD50A4243ACA /* ClothingClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClothingClassifier.swift; sourceTree = "<group>"; };
 		87463F153D77FA6F38B00C9B /* SwiftData */ = {isa = PBXFileReference; path = SwiftData; sourceTree = "<group>"; };
 		8AA353E6D408534C50CFEC36 /* StyleFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleFeedback.swift; sourceTree = "<group>"; };
 		91DE6EC50EEE4A41275709F5 /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
@@ -168,6 +168,7 @@
 		04F8192F934B2F21EAC4D84F /* ML */ = {
 			isa = PBXGroup;
 			children = (
+				8627BD17065FDF1CE85B410D /* Models */,
 				0E273ECD1EFC4B4A5CAF8847 /* Services */,
 			);
 			path = ML;
@@ -219,7 +220,6 @@
 				D61A95855A98E073612F7256 /* ImageService.swift */,
 				1F1F596A01DB436987A091C8 /* OnboardingManager.swift */,
 				13092671F114219DB224BB8B /* RecommendationService.swift */,
-				6B474D1518CC3735AC0D3121 /* WeatherService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -298,6 +298,14 @@
 				E499FB2DF2F58DD17F5FAB1C /* Views */,
 			);
 			path = ClosetCurator;
+			sourceTree = "<group>";
+		};
+		8627BD17065FDF1CE85B410D /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				8576F13D90CECD50A4243ACA /* ClothingClassifier.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		8FB9ABF4BF10B1A4F78D1897 /* Frameworks */ = {
@@ -584,6 +592,7 @@
 				C6CF630992D5EA6617DDA28F /* ClosetCuratorApp.swift in Sources */,
 				09F8B7048CA30F4F4FB98451 /* ClosetView.swift in Sources */,
 				F73E15AB1553D3888CCE0CA9 /* ClosetViewModel.swift in Sources */,
+				BD1C118A015C25846B76FDE7 /* ClothingClassifier.swift in Sources */,
 				68A303990462859A53AA41C5 /* ClothingDetectionService.swift in Sources */,
 				2058C07BD57DACB850D6D86E /* ClothingItem.swift in Sources */,
 				7B383D3FCE302CD63BB6C78D /* ContentView.swift in Sources */,
@@ -605,7 +614,6 @@
 				5BD1BFA21CA104D73CB56558 /* StylePreference.swift in Sources */,
 				A7255F155D50175809023FD5 /* StyleRecommendationService.swift in Sources */,
 				4A794189E14869A9C77A2201 /* WeatherService.swift in Sources */,
-				64919556F007B1260CC81961 /* WeatherService.swift in Sources */,
 				AE2CB9180E3155B064207E7F /* WeatherView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
