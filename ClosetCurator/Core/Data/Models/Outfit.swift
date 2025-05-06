@@ -11,9 +11,6 @@ final class Outfit {
     var wearCount: Int
     var favorite: Bool
     var notes: String?
-    var minTemperature: Double?
-    var maxTemperature: Double?
-    var weatherTags: [WeatherTag]
     var styleTags: [StyleTag]
     var rating: Int?
     
@@ -26,9 +23,6 @@ final class Outfit {
         wearCount: Int = 0,
         favorite: Bool = false,
         notes: String? = nil,
-        minTemperature: Double? = nil,
-        maxTemperature: Double? = nil,
-        weatherTags: [WeatherTag] = [],
         styleTags: [StyleTag] = [],
         rating: Int? = nil
     ) {
@@ -40,18 +34,8 @@ final class Outfit {
         self.wearCount = wearCount
         self.favorite = favorite
         self.notes = notes
-        self.minTemperature = minTemperature
-        self.maxTemperature = maxTemperature
-        self.weatherTags = weatherTags
         self.styleTags = styleTags
         self.rating = rating
-    }
-    
-    // MARK: - Weather Compatibility
-    
-    func isSuitableForTemperature(_ temperature: Double) -> Bool {
-        guard let min = minTemperature, let max = maxTemperature else { return true }
-        return temperature >= min && temperature <= max
     }
     
     // MARK: - Usage Tracking

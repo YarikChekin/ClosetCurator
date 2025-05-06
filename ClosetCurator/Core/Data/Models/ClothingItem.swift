@@ -15,17 +15,13 @@ final class ClothingItem {
     var notes: String?
     var dateAdded: Date
     var imageURL: URL?
-    var temperatureRange: ClosedRange<Double>?
     @Relationship(deleteRule: .cascade) var outfits: [Outfit]?
     var wearCount: Int
     var lastWorn: Date?
     var favorite: Bool
     var mlConfidence: Double?
     
-    // Weather-related properties
-    var minTemperature: Double?
-    var maxTemperature: Double?
-    var weatherTags: [WeatherTag]
+    // Style-related properties
     var styleTags: [StyleTag]
     
     init(
@@ -39,15 +35,11 @@ final class ClothingItem {
         notes: String? = nil,
         dateAdded: Date = Date(),
         imageURL: URL? = nil,
-        temperatureRange: ClosedRange<Double>? = nil,
         outfits: [Outfit]? = nil,
         wearCount: Int = 0,
         lastWorn: Date? = nil,
         favorite: Bool = false,
         mlConfidence: Double? = nil,
-        minTemperature: Double? = nil,
-        maxTemperature: Double? = nil,
-        weatherTags: [WeatherTag] = [],
         styleTags: [StyleTag] = []
     ) {
         self.id = id
@@ -60,23 +52,12 @@ final class ClothingItem {
         self.notes = notes
         self.dateAdded = dateAdded
         self.imageURL = imageURL
-        self.temperatureRange = temperatureRange
         self.outfits = outfits
         self.wearCount = wearCount
         self.lastWorn = lastWorn
         self.favorite = favorite
         self.mlConfidence = mlConfidence
-        self.minTemperature = minTemperature
-        self.maxTemperature = maxTemperature
-        self.weatherTags = weatherTags
         self.styleTags = styleTags
-    }
-    
-    // MARK: - Weather Compatibility
-    
-    func isSuitableForTemperature(_ temperature: Double) -> Bool {
-        guard let minTemp = minTemperature, let maxTemp = maxTemperature else { return true }
-        return temperature >= minTemp && temperature <= maxTemp
     }
     
     // MARK: - Usage Tracking
@@ -96,15 +77,6 @@ enum ClothingCategory: String, Codable, CaseIterable {
     case accessories
 }
 
-enum WeatherTag: String, Codable, CaseIterable {
-    case hot
-    case warm
-    case cool
-    case cold
-    case rainy
-    case snowy
-}
-
 enum StyleTag: String, Codable, CaseIterable {
     case casual
     case formal
@@ -113,17 +85,4 @@ enum StyleTag: String, Codable, CaseIterable {
     case elegant
     case vintage
     case modern
-}
-
-// Weather conditions for compatibility with WeatherKit
-enum WeatherCondition: String, Codable, CaseIterable {
-    case sunny
-    case cloudy
-    case partlyCloudy
-    case rainy
-    case snowy
-    case windy
-    case foggy
-    case stormy
-    case unknown
 } 

@@ -2,7 +2,6 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @StateObject private var weatherService = WeatherService()
     @State private var selectedTab = 0
     
     var body: some View {
@@ -36,9 +35,6 @@ struct ContentView: View {
                     Label("Settings", systemImage: "gear")
                 }
                 .tag(4)
-        }
-        .task {
-            await weatherService.getCurrentWeather()
         }
     }
 }
@@ -111,6 +107,7 @@ struct ClothingItemRow: View {
 }
 
 struct OutfitsView: View {
+    @Environment(\.modelContext) private var modelContext
     @Query private var outfits: [Outfit]
     @State private var showingAddOutfit = false
     
@@ -166,60 +163,23 @@ struct OutfitRow: View {
 }
 
 struct RecommendationsView: View {
-    @StateObject private var weatherService = WeatherService()
     @Query private var outfits: [Outfit]
     
     var body: some View {
         NavigationStack {
             List {
-                if let weather = weatherService.currentWeather {
-                    WeatherInfoView(weather: weather)
-                }
-                
                 ForEach(recommendedOutfits) { outfit in
                     OutfitRow(outfit: outfit)
                 }
             }
             .navigationTitle("Recommendations")
-            .refreshable {
-                await weatherService.getCurrentWeather()
-            }
         }
     }
     
     private var recommendedOutfits: [Outfit] {
-        guard let weather = weatherService.currentWeather else { return [] }
-        
-        return outfits.filter { outfit in
-            // Filter outfits based on current weather
-            if let temperature = weather.temperature {
-                if let range = outfit.temperatureRange, !range.contains(temperature) {
-                    return false
-                }
-            }
-            
-            return true
-        }
-    }
-}
-
-struct WeatherInfoView: View {
-    let weather: Weather
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            Text("Current Weather")
-                .font(.headline)
-            if let temperature = weather.temperature {
-                Text("Temperature: \(Int(temperature))°")
-            }
-            if let condition = weather.condition {
-                Text("Conditions: \(condition)")
-            }
-        }
-        .padding()
-        .background(Color.secondary.opacity(0.1))
-        .cornerRadius(10)
+        // Simple logic for now - just show all outfits
+        // We'll implement smarter recommendations later
+        return outfits
     }
 }
 
@@ -248,11 +208,4 @@ struct SettingsView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: [
-            ClothingItem.self,
-            Outfit.self,
-            StylePreference.self,
-            StyleBoard.self,
-            StyleBoardItem.self
-        ])
 } 
