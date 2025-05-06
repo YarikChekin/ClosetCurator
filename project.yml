@@ -16,7 +16,7 @@ targets:
       base:
         INFOPLIST_FILE: ClosetCurator/Info.plist
         PRODUCT_BUNDLE_IDENTIFIER: com.ychekin.ClosetCurator
-        DEVELOPMENT_TEAM: "" # Add your team ID here
+        DEVELOPMENT_TEAM: Yarik
         SWIFT_VERSION: 5.0
         TARGETED_DEVICE_FAMILY: 1,2 # iPhone and iPad
     dependencies:
