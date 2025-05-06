@@ -4,7 +4,9 @@ import CoreLocation
 
 @MainActor
 final class WeatherService: ObservableObject {
-    private let weatherService = WeatherService.shared
+    // Using Apple's WeatherKit service
+    private let weatherKitService = WeatherKit.WeatherService()
+    
     @Published var currentWeather: Weather?
     @Published var hourlyForecast: [HourWeather] = []
     @Published var dailyForecast: [DayWeather] = []
@@ -15,7 +17,7 @@ final class WeatherService: ObservableObject {
     
     func fetchWeather(for location: CLLocation) async {
         do {
-            let weather = try await weatherService.weather(for: location)
+            let weather = try await weatherKitService.weather(for: location)
             currentWeather = weather
             hourlyForecast = Array(weather.hourlyForecast.forecast.prefix(24))
             dailyForecast = Array(weather.dailyForecast.forecast.prefix(7))
@@ -28,20 +30,20 @@ final class WeatherService: ObservableObject {
     }
     
     private func convertToWeatherInfo(from weather: Weather) -> WeatherInfo {
-        guard let currentWeather = weather.currentWeather else {
+        guard let weatherCurrent = weather.currentWeather else {
             return WeatherInfo(condition: .unknown)
         }
         
         // Map WeatherKit condition to our condition
         let condition: WeatherInfo.WeatherCondition
-        switch currentWeather.condition {
+        switch weatherCurrent.condition {
         case .clear:
             condition = .sunny
         case .cloudy, .mostlyCloudy:
             condition = .cloudy
         case .partlyCloudy, .mostlyClear:
             condition = .partlyCloudy
-        case .rain, .heavyRain, .drizzle, .showers:
+        case .rain, .heavyRain, .drizzle:
             condition = .rainy
         case .snow, .sleet, .hail, .wintryMix, .flurries:
             condition = .snowy
@@ -56,11 +58,11 @@ final class WeatherService: ObservableObject {
         }
         
         return WeatherInfo(
-            temperature: currentWeather.temperature.value,
+            temperature: weatherCurrent.temperature.value,
             condition: condition,
-            humidity: currentWeather.humidity,
-            windSpeed: currentWeather.wind.speed.value,
-            feelsLike: currentWeather.apparentTemperature.value,
+            humidity: weatherCurrent.humidity,
+            windSpeed: weatherCurrent.wind.speed.value,
+            feelsLike: weatherCurrent.apparentTemperature.value,
             minTemperature: dailyForecast.first?.lowTemperature.value,
             maxTemperature: dailyForecast.first?.highTemperature.value
         )
@@ -70,10 +72,10 @@ final class WeatherService: ObservableObject {
         currentWeather?.currentWeather.temperature.value
     }
     
-    func getCurrentConditions() -> Set<ClothingItem.WeatherCondition> {
+    func getCurrentConditions() -> Set<WeatherCondition> {
         guard let current = currentWeather?.currentWeather else { return [] }
         
-        var conditions: Set<ClothingItem.WeatherCondition> = []
+        var conditions: Set<WeatherCondition> = []
         
         // Map WeatherKit conditions to our conditions
         if current.isDaylight {
@@ -110,11 +112,11 @@ final class WeatherService: ObservableObject {
         return minTemp...maxTemp
     }
     
-    func getWeatherConditions(for hours: Int = 24) -> Set<ClothingItem.WeatherCondition> {
+    func getWeatherConditions(for hours: Int = 24) -> Set<WeatherCondition> {
         guard !hourlyForecast.isEmpty else { return [] }
         
         let relevantForecast = Array(hourlyForecast.prefix(hours))
-        var conditions: Set<ClothingItem.WeatherCondition> = []
+        var conditions: Set<WeatherCondition> = []
         
         for forecast in relevantForecast {
             if forecast.isDaylight {
@@ -136,5 +138,34 @@ final class WeatherService: ObservableObject {
         }
         
         return conditions
+    }
+    
+    // Convert WeatherCondition to WeatherTag for ClothingItem compatibility
+    func convertToWeatherTags(from conditions: Set<WeatherCondition>, temperature: Double?) -> [WeatherTag] {
+        var tags: [WeatherTag] = []
+        
+        // Add temperature-based tags
+        if let temp = temperature {
+            if temp >= 30 {
+                tags.append(.hot)
+            } else if temp >= 20 {
+                tags.append(.warm)
+            } else if temp >= 10 {
+                tags.append(.cool)
+            } else {
+                tags.append(.cold)
+            }
+        }
+        
+        // Add condition-based tags
+        if conditions.contains(.rainy) {
+            tags.append(.rainy)
+        }
+        
+        if conditions.contains(.snowy) {
+            tags.append(.snowy)
+        }
+        
+        return tags
     }
 } 

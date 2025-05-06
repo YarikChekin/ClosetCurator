@@ -113,4 +113,17 @@ enum StyleTag: String, Codable, CaseIterable {
     case elegant
     case vintage
     case modern
+}
+
+// Weather conditions for compatibility with WeatherKit
+enum WeatherCondition: String, Codable, CaseIterable {
+    case sunny
+    case cloudy
+    case partlyCloudy
+    case rainy
+    case snowy
+    case windy
+    case foggy
+    case stormy
+    case unknown
 } 
