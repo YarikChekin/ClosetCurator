@@ -86,7 +86,7 @@ final class ClothingDetectionService: ObservableObject {
         )
     }
     
-    private func determineCategory(from identifier: String) throws -> ClothingItem.Category {
+    private func determineCategory(from identifier: String) throws -> ClothingCategory {
         // Map the classification to a clothing category
         switch identifier.lowercased() {
         case let str where str.contains("shirt") || str.contains("top"):
