@@ -30,9 +30,8 @@ final class WeatherService: ObservableObject {
     }
     
     private func convertToWeatherInfo(from weather: Weather) -> WeatherInfo {
-        guard let weatherCurrent = weather.currentWeather else {
-            return WeatherInfo(condition: .unknown)
-        }
+        // CurrentWeather is not optional in WeatherKit's Weather
+        let weatherCurrent = weather.currentWeather
         
         // Map WeatherKit condition to our condition
         let condition: WeatherInfo.WeatherCondition
@@ -73,8 +72,10 @@ final class WeatherService: ObservableObject {
     }
     
     func getCurrentConditions() -> Set<WeatherCondition> {
-        guard let current = currentWeather?.currentWeather else { return [] }
+        guard let currentWeather = currentWeather else { return [] }
         
+        // currentWeather is not nil, but currentWeather.currentWeather is not optional
+        let current = currentWeather.currentWeather
         var conditions: Set<WeatherCondition> = []
         
         // Map WeatherKit conditions to our conditions
