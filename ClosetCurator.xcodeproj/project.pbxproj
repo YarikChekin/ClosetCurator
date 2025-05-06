@@ -33,7 +33,6 @@
 		84BEF216F54F094B6059A63E /* RecommendationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE1AB200599746264687FD4 /* RecommendationServiceTests.swift */; };
 		89D0AA1235B3B724DB6AD6BD /* WeatherIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 489935685D44A2731D51802C /* WeatherIntegrationTests.swift */; };
 		8DCF36C8034E1F6843E2296F /* CreateStyleBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB2575D61C39A1A8A1C7F620 /* CreateStyleBoardView.swift */; };
-		963F1638A720D83B8706E75E /* ClothingDetectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C52E302044DA4FF44D8B62E /* ClothingDetectionService.swift */; };
 		A0CA3A423ADB0E01E1FDA010 /* CameraCaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80A3F46B4F8A28AB8A804A5 /* CameraCaptureView.swift */; };
 		A41F8540035BCEC7FB1B9E4D /* SwiftData in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 87463F153D77FA6F38B00C9B /* SwiftData */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A7255F155D50175809023FD5 /* StyleRecommendationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC021AD595E45B8D7865B4C7 /* StyleRecommendationService.swift */; };
@@ -124,7 +123,6 @@
 		91DE6EC50EEE4A41275709F5 /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
 		96351188BDEECAB96DBE45CF /* StyleAnalysisService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleAnalysisService.swift; sourceTree = "<group>"; };
 		9784B23DF91B977C41ADBA60 /* ClothingDetectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClothingDetectionService.swift; sourceTree = "<group>"; };
-		9C52E302044DA4FF44D8B62E /* ClothingDetectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClothingDetectionService.swift; sourceTree = "<group>"; };
 		A157959195903F7B5358975E /* ClosetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosetView.swift; sourceTree = "<group>"; };
 		AB2575D61C39A1A8A1C7F620 /* CreateStyleBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateStyleBoardView.swift; sourceTree = "<group>"; };
 		AC021AD595E45B8D7865B4C7 /* StyleRecommendationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleRecommendationService.swift; sourceTree = "<group>"; };
@@ -170,7 +168,6 @@
 		04F8192F934B2F21EAC4D84F /* ML */ = {
 			isa = PBXGroup;
 			children = (
-				9C52E302044DA4FF44D8B62E /* ClothingDetectionService.swift */,
 				0E273ECD1EFC4B4A5CAF8847 /* Services */,
 			);
 			path = ML;
@@ -513,7 +510,7 @@
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					D31D7C7C650B16A9865A6C30 = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = Yarik;
 					};
 					F704C09F5D57C5BED4730396 = {
 						TestTargetID = D31D7C7C650B16A9865A6C30;
@@ -587,7 +584,6 @@
 				C6CF630992D5EA6617DDA28F /* ClosetCuratorApp.swift in Sources */,
 				09F8B7048CA30F4F4FB98451 /* ClosetView.swift in Sources */,
 				F73E15AB1553D3888CCE0CA9 /* ClosetViewModel.swift in Sources */,
-				963F1638A720D83B8706E75E /* ClothingDetectionService.swift in Sources */,
 				68A303990462859A53AA41C5 /* ClothingDetectionService.swift in Sources */,
 				2058C07BD57DACB850D6D86E /* ClothingItem.swift in Sources */,
 				7B383D3FCE302CD63BB6C78D /* ContentView.swift in Sources */,
@@ -822,7 +818,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = Yarik;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\".\"",
@@ -844,7 +840,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = Yarik;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\".\"",
