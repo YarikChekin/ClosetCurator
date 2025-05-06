@@ -1,13 +1,15 @@
 import Foundation
 import SwiftUI
 
-class OnboardingManager: ObservableObject {
+final class OnboardingManager: ObservableObject {
     static let shared = OnboardingManager()
     
-    @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding: Bool = false
-    @AppStorage("onboardingStep") var currentStep: Int = 0
+    @AppStorage("hasCompletedOnboarding") private(set) var hasCompletedOnboarding: Bool = false
+    @AppStorage("onboardingStep") private(set) var currentStep: Int = 0
     
-    var totalSteps: Int { 4 } // Welcome, Style, Closet, Permissions
+    private(set) var totalSteps: Int { 4 } // Welcome, Style, Closet, Permissions
+    
+    private init() {} // Singleton pattern
     
     func startOnboarding() {
         hasCompletedOnboarding = false

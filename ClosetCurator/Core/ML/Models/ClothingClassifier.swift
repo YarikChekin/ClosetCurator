@@ -4,7 +4,7 @@ import Vision
 
 // This is a placeholder class that mimics a CoreML model
 // In a real app, you would replace this with an actual trained model
-class YourClothingClassifier {
+final class YourClothingClassifier {
     struct ModelOutput {
         let classLabel: String
         let probability: Double
@@ -34,7 +34,7 @@ class YourClothingClassifier {
 }
 
 // Mock MLModel to satisfy the CoreML API requirements
-private class MockMLModel: MLModel {
+private final class MockMLModel: MLModel {
     override var modelDescription: MLModelDescription {
         let description = MLModelDescription()
         // Set up a basic model description
@@ -46,7 +46,7 @@ private class MockMLModel: MLModel {
     }
 }
 
-private class MockMLFeatureProvider: MLFeatureProvider {
+private final class MockMLFeatureProvider: MLFeatureProvider {
     var featureNames: Set<String> {
         return ["classLabel", "probability"]
     }

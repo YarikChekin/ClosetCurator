@@ -5,9 +5,9 @@ import UIKit
 import SwiftUI
 
 @MainActor
-class ClothingDetectionService: ObservableObject {
-    @Published var isProcessing = false
-    @Published var error: Error?
+final class ClothingDetectionService: ObservableObject {
+    @Published private(set) var isProcessing = false
+    @Published private(set) var error: Error?
     
     private var classificationRequest: VNCoreMLRequest?
     
@@ -129,7 +129,7 @@ class ClothingDetectionService: ObservableObject {
     }
 }
 
-enum ClothingDetectionError: Error {
+enum ClothingDetectionError: Error, Equatable {
     case invalidImage
     case noResults
     case notImplemented
