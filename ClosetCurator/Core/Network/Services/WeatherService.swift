@@ -1,144 +1,100 @@
 import Foundation
-import WeatherKit
 import CoreLocation
 
 @MainActor
 final class WeatherService: ObservableObject {
-    // Using Apple's WeatherKit service
-    private let weatherKitService = WeatherKit.WeatherService()
-    
-    @Published var currentWeather: Weather?
-    @Published var hourlyForecast: [HourWeather] = []
-    @Published var dailyForecast: [DayWeather] = []
+    // Our serializable weather info - this is what the app should use
+    @Published var currentWeatherInfo: WeatherInfo?
+    @Published var hourlyForecast: [WeatherInfo] = []
+    @Published var dailyForecast: [WeatherInfo] = []
     @Published var error: Error?
     
-    // Our serializable weather info
-    @Published var currentWeatherInfo: WeatherInfo?
+    // For simulating location updates
+    private let locationManager = CLLocationManager()
     
+    init() {
+        // In a real app, you would set up location permissions here
+        // For now, we'll just use mock data
+        setupMockWeather()
+    }
+    
+    private func setupMockWeather() {
+        // Create mock current weather
+        currentWeatherInfo = WeatherInfo(
+            temperature: 22.5,
+            condition: .sunny,
+            humidity: 65.0,
+            windSpeed: 10.0,
+            feelsLike: 23.0,
+            minTemperature: 20.0,
+            maxTemperature: 25.0
+        )
+        
+        // Create mock hourly forecast
+        hourlyForecast = [
+            WeatherInfo(temperature: 22.0, condition: .sunny, feelsLike: 23.0),
+            WeatherInfo(temperature: 23.0, condition: .sunny, feelsLike: 24.0),
+            WeatherInfo(temperature: 23.5, condition: .partlyCloudy, feelsLike: 24.5),
+            WeatherInfo(temperature: 24.0, condition: .cloudy, feelsLike: 25.0),
+            WeatherInfo(temperature: 23.0, condition: .cloudy, feelsLike: 24.0),
+            WeatherInfo(temperature: 22.0, condition: .partlyCloudy, feelsLike: 23.0),
+            WeatherInfo(temperature: 21.0, condition: .partlyCloudy, feelsLike: 22.0)
+        ]
+        
+        // Create mock daily forecast
+        dailyForecast = [
+            WeatherInfo(temperature: 22.5, condition: .sunny, minTemperature: 18.0, maxTemperature: 25.0),
+            WeatherInfo(temperature: 24.0, condition: .partlyCloudy, minTemperature: 19.0, maxTemperature: 26.0),
+            WeatherInfo(temperature: 23.0, condition: .cloudy, minTemperature: 18.0, maxTemperature: 24.0),
+            WeatherInfo(temperature: 20.0, condition: .rainy, minTemperature: 16.0, maxTemperature: 22.0),
+            WeatherInfo(temperature: 21.0, condition: .partlyCloudy, minTemperature: 17.0, maxTemperature: 23.0)
+        ]
+    }
+    
+    // This function would fetch real weather from an API in a production app
     func fetchWeather(for location: CLLocation) async {
+        // In a real app, this would call a weather API
+        // For development, we'll just use mock data
+        // We already set up mock data in init(), but this simulates a delay
+        
         do {
-            let weather = try await weatherKitService.weather(for: location)
-            currentWeather = weather
-            hourlyForecast = Array(weather.hourlyForecast.forecast.prefix(24))
-            dailyForecast = Array(weather.dailyForecast.forecast.prefix(7))
+            // Simulate network delay
+            try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
             
-            // Convert to our WeatherInfo type
-            currentWeatherInfo = convertToWeatherInfo(from: weather)
+            // We'll just use our existing mock data
+            // In a real app, this is where you'd parse API response
+            
+            // If we want to simulate different weather for different locations,
+            // we could use the location parameter to vary the mock data
+            
+            // For example, we could vary the temperature based on latitude
+            if let currentTemp = currentWeatherInfo?.temperature {
+                let latitudeAdjustment = (location.coordinate.latitude - 40.0) * 0.5
+                let newTemp = currentTemp + latitudeAdjustment
+                currentWeatherInfo?.temperature = newTemp
+                currentWeatherInfo?.feelsLike = newTemp + 1.0
+            }
+            
         } catch {
             self.error = error
         }
     }
     
-    private func convertToWeatherInfo(from weather: Weather) -> WeatherInfo {
-        // CurrentWeather is not optional in WeatherKit's Weather
-        let weatherCurrent = weather.currentWeather
-        
-        // Map WeatherKit condition to our condition
-        let condition: WeatherInfo.WeatherCondition
-        switch weatherCurrent.condition {
-        case .clear:
-            condition = .sunny
-        case .cloudy, .mostlyCloudy:
-            condition = .cloudy
-        case .partlyCloudy, .mostlyClear:
-            condition = .partlyCloudy
-        case .rain, .heavyRain, .drizzle:
-            condition = .rainy
-        case .snow, .sleet, .hail, .wintryMix, .flurries:
-            condition = .snowy
-        case .windy, .breezy:
-            condition = .windy
-        case .foggy, .haze:
-            condition = .foggy
-        case .thunderstorms:
-            condition = .stormy
-        default:
-            condition = .unknown
-        }
-        
-        return WeatherInfo(
-            temperature: weatherCurrent.temperature.value,
-            condition: condition,
-            humidity: weatherCurrent.humidity,
-            windSpeed: weatherCurrent.wind.speed.value,
-            feelsLike: weatherCurrent.apparentTemperature.value,
-            minTemperature: dailyForecast.first?.lowTemperature.value,
-            maxTemperature: dailyForecast.first?.highTemperature.value
-        )
-    }
-    
     func getCurrentTemperature() -> Double? {
-        currentWeather?.currentWeather.temperature.value
+        return currentWeatherInfo?.temperature
     }
     
     func getCurrentConditions() -> Set<WeatherCondition> {
-        guard let currentWeather = currentWeather else { return [] }
-        
-        // currentWeather is not nil, but currentWeather.currentWeather is not optional
-        let current = currentWeather.currentWeather
-        var conditions: Set<WeatherCondition> = []
-        
-        // Map WeatherKit conditions to our conditions
-        if current.isDaylight {
-            conditions.insert(.sunny)
-        }
-        
-        switch current.condition {
-        case .rain, .heavyRain, .drizzle:
-            conditions.insert(.rainy)
-        case .cloudy, .mostlyCloudy:
-            conditions.insert(.cloudy)
-        case .snow, .sleet, .hail:
-            conditions.insert(.snowy)
-        case .windy, .breezy:
-            conditions.insert(.windy)
-        default:
-            break
-        }
-        
-        return conditions
+        guard let condition = currentWeatherInfo?.condition else { return [] }
+        return [condition]
     }
     
-    func getTemperatureRange(for hours: Int = 24) -> ClosedRange<Double>? {
-        guard !hourlyForecast.isEmpty else { return nil }
-        
-        let relevantForecast = Array(hourlyForecast.prefix(hours))
-        let temperatures = relevantForecast.map { $0.temperature.value }
-        
-        guard let minTemp = temperatures.min(),
-              let maxTemp = temperatures.max() else {
+    func getTemperatureRange() -> ClosedRange<Double>? {
+        guard let min = currentWeatherInfo?.minTemperature,
+              let max = currentWeatherInfo?.maxTemperature else {
             return nil
         }
-        
-        return minTemp...maxTemp
-    }
-    
-    func getWeatherConditions(for hours: Int = 24) -> Set<WeatherCondition> {
-        guard !hourlyForecast.isEmpty else { return [] }
-        
-        let relevantForecast = Array(hourlyForecast.prefix(hours))
-        var conditions: Set<WeatherCondition> = []
-        
-        for forecast in relevantForecast {
-            if forecast.isDaylight {
-                conditions.insert(.sunny)
-            }
-            
-            switch forecast.condition {
-            case .rain, .heavyRain, .drizzle:
-                conditions.insert(.rainy)
-            case .cloudy, .mostlyCloudy:
-                conditions.insert(.cloudy)
-            case .snow, .sleet, .hail:
-                conditions.insert(.snowy)
-            case .windy, .breezy:
-                conditions.insert(.windy)
-            default:
-                break
-            }
-        }
-        
-        return conditions
+        return min...max
     }
     
     // Convert WeatherCondition to WeatherTag for ClothingItem compatibility
