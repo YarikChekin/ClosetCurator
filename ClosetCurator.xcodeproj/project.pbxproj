@@ -17,6 +17,7 @@
 		2058C07BD57DACB850D6D86E /* ClothingItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB8A5C6D6B08D36449F3B0B /* ClothingItem.swift */; };
 		24C3516C9A7E5CFB7C48BF54 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 181EB1B559C3A241C822B2C1 /* Assets.xcassets */; };
 		44068FFB395AF940E4B84313 /* WeatherServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A442620E5A32DE34E07C7B /* WeatherServiceTests.swift */; };
+		466FC1D52DE94EC49F2507C9 /* WeatherInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BBD97D75519FE52E23FC9B6 /* WeatherInfo.swift */; };
 		4A6191E4ECB1954158B52710 /* OnboardingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1F596A01DB436987A091C8 /* OnboardingManager.swift */; };
 		4A794189E14869A9C77A2201 /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91DE6EC50EEE4A41275709F5 /* WeatherService.swift */; };
 		5BD1BFA21CA104D73CB56558 /* StylePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451BAC609CC4A90385EECB59 /* StylePreference.swift */; };
@@ -89,6 +90,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0BBD97D75519FE52E23FC9B6 /* WeatherInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherInfo.swift; sourceTree = "<group>"; };
 		13092671F114219DB224BB8B /* RecommendationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationService.swift; sourceTree = "<group>"; };
 		1756CAF1F2D8EDDA4C6BAE53 /* SwiftUI */ = {isa = PBXFileReference; path = SwiftUI; sourceTree = "<group>"; };
 		181EB1B559C3A241C822B2C1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -435,6 +437,7 @@
 			children = (
 				4FB8A5C6D6B08D36449F3B0B /* ClothingItem.swift */,
 				3EDCE3ECBFBBA2E8C3095D22 /* Outfit.swift */,
+				0BBD97D75519FE52E23FC9B6 /* WeatherInfo.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -613,6 +616,7 @@
 				674C8EF87723CDA18EBDF73D /* StyleFeedback.swift in Sources */,
 				5BD1BFA21CA104D73CB56558 /* StylePreference.swift in Sources */,
 				A7255F155D50175809023FD5 /* StyleRecommendationService.swift in Sources */,
+				466FC1D52DE94EC49F2507C9 /* WeatherInfo.swift in Sources */,
 				4A794189E14869A9C77A2201 /* WeatherService.swift in Sources */,
 				AE2CB9180E3155B064207E7F /* WeatherView.swift in Sources */,
 			);

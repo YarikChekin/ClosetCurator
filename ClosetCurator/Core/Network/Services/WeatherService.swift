@@ -3,12 +3,15 @@ import WeatherKit
 import CoreLocation
 
 @MainActor
-class WeatherService: ObservableObject {
+final class WeatherService: ObservableObject {
     private let weatherService = WeatherService.shared
     @Published var currentWeather: Weather?
     @Published var hourlyForecast: [HourWeather] = []
     @Published var dailyForecast: [DayWeather] = []
     @Published var error: Error?
+    
+    // Our serializable weather info
+    @Published var currentWeatherInfo: WeatherInfo?
     
     func fetchWeather(for location: CLLocation) async {
         do {
@@ -16,9 +19,51 @@ class WeatherService: ObservableObject {
             currentWeather = weather
             hourlyForecast = Array(weather.hourlyForecast.forecast.prefix(24))
             dailyForecast = Array(weather.dailyForecast.forecast.prefix(7))
+            
+            // Convert to our WeatherInfo type
+            currentWeatherInfo = convertToWeatherInfo(from: weather)
         } catch {
             self.error = error
         }
+    }
+    
+    private func convertToWeatherInfo(from weather: Weather) -> WeatherInfo {
+        guard let currentWeather = weather.currentWeather else {
+            return WeatherInfo(condition: .unknown)
+        }
+        
+        // Map WeatherKit condition to our condition
+        let condition: WeatherInfo.WeatherCondition
+        switch currentWeather.condition {
+        case .clear:
+            condition = .sunny
+        case .cloudy, .mostlyCloudy:
+            condition = .cloudy
+        case .partlyCloudy, .mostlyClear:
+            condition = .partlyCloudy
+        case .rain, .heavyRain, .drizzle, .showers:
+            condition = .rainy
+        case .snow, .sleet, .hail, .wintryMix, .flurries:
+            condition = .snowy
+        case .windy, .breezy:
+            condition = .windy
+        case .foggy, .haze:
+            condition = .foggy
+        case .thunderstorms:
+            condition = .stormy
+        default:
+            condition = .unknown
+        }
+        
+        return WeatherInfo(
+            temperature: currentWeather.temperature.value,
+            condition: condition,
+            humidity: currentWeather.humidity,
+            windSpeed: currentWeather.wind.speed.value,
+            feelsLike: currentWeather.apparentTemperature.value,
+            minTemperature: dailyForecast.first?.lowTemperature.value,
+            maxTemperature: dailyForecast.first?.highTemperature.value
+        )
     }
     
     func getCurrentTemperature() -> Double? {

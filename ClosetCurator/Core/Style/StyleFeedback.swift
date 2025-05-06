@@ -41,7 +41,7 @@ final class StyleFeedback {
     
     struct FeedbackContext: Codable, Hashable {
         var occasion: Occasion?
-        var weather: Weather?
+        var weatherInfo: WeatherInfo?
         var location: String?
         var time: Date
         var adventureLevel: Double? // How far outside comfort zone
@@ -89,5 +89,5 @@ struct StyleRecommendation {
     // Context
     let forOccasion: Occasion?
     let forSeason: Season?
-    let forWeather: Weather?
+    let forWeatherInfo: WeatherInfo?
 } 
