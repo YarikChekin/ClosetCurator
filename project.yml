@@ -1,0 +1,60 @@
+name: ClosetCurator
+options:
+  bundleIdPrefix: com.ychekin
+  deploymentTarget:
+    iOS: 17.0
+  xcodeVersion: "15.0"
+  createIntermediateGroups: true
+
+targets:
+  ClosetCurator:
+    type: application
+    platform: iOS
+    sources:
+      - ClosetCurator
+    settings:
+      base:
+        INFOPLIST_FILE: ClosetCurator/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.ychekin.ClosetCurator
+        DEVELOPMENT_TEAM: "" # Add your team ID here
+        SWIFT_VERSION: 5.0
+        TARGETED_DEVICE_FAMILY: 1,2 # iPhone and iPad
+    dependencies:
+      - framework: SwiftUI
+      - framework: SwiftData
+      - framework: UserNotifications
+    info:
+      path: ClosetCurator/Info.plist
+      properties:
+        CFBundleDisplayName: ClosetCurator
+        UILaunchStoryboardName: ""
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+          UISceneConfigurations:
+            UIWindowSceneSessionRoleApplication:
+              - UISceneConfigurationName: Default Configuration
+                UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
+
+  ClosetCuratorTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - ClosetCuratorTests
+    dependencies:
+      - target: ClosetCurator
+    settings:
+      base:
+        INFOPLIST_FILE: ClosetCuratorTests/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.ychekin.ClosetCuratorTests
+
+  ClosetCuratorUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - ClosetCuratorUITests
+    dependencies:
+      - target: ClosetCurator
+    settings:
+      base:
+        INFOPLIST_FILE: ClosetCuratorUITests/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.ychekin.ClosetCuratorUITests 
