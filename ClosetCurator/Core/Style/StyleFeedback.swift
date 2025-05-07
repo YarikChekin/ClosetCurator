@@ -41,7 +41,6 @@ final class StyleFeedback {
     
     struct FeedbackContext: Codable, Hashable {
         var occasion: Occasion?
-        var location: String?
         var time: Date
         var adventureLevel: Double? // How far outside comfort zone
     }

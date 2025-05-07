@@ -1,6 +1,6 @@
 # ClosetCurator
 
-An intelligent iOS app that digitizes your closet and provides personalized outfit recommendations based on weather and style preferences.
+An intelligent iOS app that digitizes your closet and provides personalized outfit recommendations based on style preferences.
 
 ## Features
 
@@ -8,10 +8,6 @@ An intelligent iOS app that digitizes your closet and provides personalized outf
   - AI-powered clothing item detection using Vision/Core ML
   - Automatic categorization of clothing items
   - Smart tagging and metadata extraction
-
-- 🌤️ **Weather-Aware Recommendations**
-  - Integration with weather services for forecast data
-  - Temperature-appropriate outfit suggestions
 
 - 👔 **Smart Outfit Management**
   - AI-powered outfit recommendations
@@ -76,8 +72,7 @@ ClosetCurator/
 │   │       ├── StyleBoardItem.swift
 │   │       └── StyleFeedback.swift
 │   └── Services/
-│       ├── ImageService.swift
-│       └── WeatherService.swift
+│       └── ImageService.swift
 └── Views/
     └── ContentView.swift
 ```
@@ -98,9 +93,6 @@ The app uses SwiftData for persistence, with models including `ClothingItem`, `O
 
 ### ML Classification
 `ClothingDetectionService` provides clothing item detection, while `StyleAnalysisService` analyzes style elements in images.
-
-### Weather-Based Recommendations
-The app filters outfits based on temperature suitability using the `WeatherService`.
 
 ### Style Preference Learning
 The style system allows users to:

@@ -10,7 +10,6 @@ class StyleRecommendationService {
     /// Generates outfit recommendations based on user preferences and conditions
     func generateOutfitRecommendations(
         preferences: StylePreference,
-        weatherConditions: Weather? = nil,
         occasion: Occasion? = nil,
         modelContext: ModelContext
     ) async throws -> [StyleRecommendation] {
@@ -25,13 +24,8 @@ class StyleRecommendationService {
         // Filter items based on user preferences
         let preferredItems = filterItemsByPreference(allItems, preferences: preferences)
         
-        // Apply weather filters if available
-        let weatherFilteredItems = weatherConditions != nil ? 
-            filterItemsByWeather(preferredItems, weather: weatherConditions!) : 
-            preferredItems
-        
         // Group items by category
-        let categorizedItems = Dictionary(grouping: weatherFilteredItems) { $0.category }
+        let categorizedItems = Dictionary(grouping: preferredItems) { $0.category }
         
         // Generate outfit recommendations
         var recommendations: [StyleRecommendation] = []
@@ -40,13 +34,6 @@ class StyleRecommendationService {
         for outfit in allOutfits {
             // Skip invalid outfits
             guard outfit.isValid else { continue }
-            
-            // Check if outfit is suitable for weather
-            if let weather = weatherConditions, 
-               let temp = weather.temperature,
-               !outfit.isSuitableForTemperature(temp) {
-                continue
-            }
             
             // Check if outfit matches occasion
             if let requiredOccasion = occasion {
@@ -78,8 +65,7 @@ class StyleRecommendationService {
                     color: nil,
                     brand: nil,
                     forOccasion: occasion,
-                    forSeason: determineSeason(),
-                    forWeather: weatherConditions
+                    forSeason: determineSeason()
                 ))
             }
         }
@@ -91,7 +77,6 @@ class StyleRecommendationService {
                 categorizedItems: categorizedItems,
                 preferences: preferences,
                 occasion: occasion,
-                weather: weatherConditions,
                 limit: 5 - recommendations.count
             )
             
@@ -139,8 +124,7 @@ class StyleRecommendationService {
                 color: nil,
                 brand: brand,
                 forOccasion: nil,
-                forSeason: determineSeason(),
-                forWeather: nil
+                forSeason: determineSeason()
             ))
         }
         
@@ -159,8 +143,7 @@ class StyleRecommendationService {
                 color: nil,
                 brand: nil,
                 forOccasion: nil,
-                forSeason: determineSeason(),
-                forWeather: nil
+                forSeason: determineSeason()
             ))
         }
         
@@ -188,8 +171,7 @@ class StyleRecommendationService {
                 color: color,
                 brand: preferredBrands.randomElement(),
                 forOccasion: nil,
-                forSeason: determineSeason(),
-                forWeather: nil
+                forSeason: determineSeason()
             ))
         }
         
@@ -202,15 +184,6 @@ class StyleRecommendationService {
         // In a real implementation, this would apply sophisticated filtering based on preferences
         // For now, just return all items
         return items
-    }
-    
-    private func filterItemsByWeather(_ items: [ClothingItem], weather: Weather) -> [ClothingItem] {
-        // Filter items based on weather conditions
-        guard let temperature = weather.temperature else { return items }
-        
-        return items.filter { item in
-            item.isSuitableForTemperature(temperature)
-        }
     }
     
     private func calculateOutfitConfidence(_ outfit: Outfit, preferences: StylePreference) -> Double {
@@ -229,7 +202,6 @@ class StyleRecommendationService {
         // Generate an explanation for why this outfit is recommended
         let reasons = [
             "This outfit matches your style preferences",
-            "This combination works well for the current weather",
             "These colors complement each other well",
             "This is a versatile outfit that can be dressed up or down",
             "This outfit has a similar vibe to your vision boards"
@@ -242,176 +214,71 @@ class StyleRecommendationService {
         categorizedItems: [ClothingCategory: [ClothingItem]],
         preferences: StylePreference,
         occasion: Occasion?,
-        weather: Weather?,
         limit: Int
     ) throws -> [StyleRecommendation] {
         var recommendations: [StyleRecommendation] = []
         
         // Ensure we have tops and bottoms (or dresses)
-        guard (categorizedItems[.tops]?.isEmpty == false && categorizedItems[.bottoms]?.isEmpty == false)
-                || categorizedItems[.dresses]?.isEmpty == false else {
-            return []
+        guard let tops = categorizedItems[.tops],
+              let bottoms = categorizedItems[.bottoms] else {
+            return recommendations
         }
         
-        // Generate some outfit combinations
-        for _ in 0..<min(limit, 3) {
-            // Either use a dress, or a top + bottom combination
-            let useTopBottom = categorizedItems[.dresses]?.isEmpty == true ||
-                              (categorizedItems[.tops]?.isEmpty == false && 
-                               categorizedItems[.bottoms]?.isEmpty == false && 
-                               Bool.random(in: 0...1))
-            
-            var outfitItems: [ClothingItem] = []
-            var outfitItemIds: [UUID] = []
-            
-            if useTopBottom {
-                // Add a top
-                if let tops = categorizedItems[.tops], !tops.isEmpty {
-                    let randomTop = tops.randomElement()!
-                    outfitItems.append(randomTop)
-                    outfitItemIds.append(randomTop.id)
-                }
-                
-                // Add a bottom
-                if let bottoms = categorizedItems[.bottoms], !bottoms.isEmpty {
-                    let randomBottom = bottoms.randomElement()!
-                    outfitItems.append(randomBottom)
-                    outfitItemIds.append(randomBottom.id)
-                }
-            } else {
-                // Add a dress
-                if let dresses = categorizedItems[.dresses], !dresses.isEmpty {
-                    let randomDress = dresses.randomElement()!
-                    outfitItems.append(randomDress)
-                    outfitItemIds.append(randomDress.id)
-                }
+        // Generate some random combinations
+        for _ in 0..<limit {
+            guard let top = tops.randomElement(),
+                  let bottom = bottoms.randomElement() else {
+                continue
             }
             
-            // Optionally add shoes
-            if let shoes = categorizedItems[.shoes], !shoes.isEmpty && Bool.random(in: 0...1) {
-                let randomShoes = shoes.randomElement()!
-                outfitItems.append(randomShoes)
-                outfitItemIds.append(randomShoes.id)
-            }
+            let confidence = Double.random(in: 0.6...0.9)
+            let adventureLevel = Double.random(in: 0.2...0.8)
             
-            // Optionally add accessories
-            if let accessories = categorizedItems[.accessories], !accessories.isEmpty && Bool.random(in: 0...1) {
-                let randomAccessory = accessories.randomElement()!
-                outfitItems.append(randomAccessory)
-                outfitItemIds.append(randomAccessory.id)
-            }
-            
-            // Optionally add outerwear
-            if let outerwear = categorizedItems[.outerwear], !outerwear.isEmpty && Bool.random(in: 0...1) {
-                let randomOuterwear = outerwear.randomElement()!
-                outfitItems.append(randomOuterwear)
-                outfitItemIds.append(randomOuterwear.id)
-            }
-            
-            // Calculate confidence and adventure level
-            let confidence = Double.random(in: 0.65...0.9)
-            let adventureLevel = Double.random(in: 0.2...preferences.adventureLevel * 1.2)
-            
-            // Generate a reason for this combination
-            let reason = generateOutfitCombinationReason(outfitItems, occasion: occasion, weather: weather)
-            
-            // Create recommendation
             recommendations.append(StyleRecommendation(
                 id: UUID(),
                 type: .outfit,
-                targetId: nil, // This is a new combination, not an existing outfit
+                targetId: nil,
                 confidence: confidence,
                 adventureLevel: adventureLevel,
-                reason: reason,
-                basedOn: outfitItemIds,
+                reason: "This combination of \(top.name) and \(bottom.name) would work well together",
+                basedOn: [top.id, bottom.id],
                 category: nil,
                 style: nil,
                 color: nil,
                 brand: nil,
                 forOccasion: occasion,
-                forSeason: determineSeason(),
-                forWeather: weather
+                forSeason: determineSeason()
             ))
         }
         
         return recommendations
     }
     
-    private func generateOutfitCombinationReason(
-        _ items: [ClothingItem],
-        occasion: Occasion?,
-        weather: Weather?
-    ) -> String {
-        // Generate an explanation for this outfit combination
-        let baseReasons = [
-            "These pieces complement each other well",
-            "This combination creates a balanced silhouette",
-            "These colors work well together",
-            "This outfit has a cohesive style"
-        ]
-        
-        var reason = baseReasons.randomElement()!
-        
-        // Add occasion-specific reason
-        if let occasion = occasion {
-            let occasionReasons = [
-                "Perfect for \(occasion.rawValue) occasions",
-                "Suitable for \(occasion.rawValue) events",
-                "Works well for \(occasion.rawValue) settings"
-            ]
-            reason += " and is " + occasionReasons.randomElement()!
-        }
-        
-        // Add weather-specific reason
-        if let weather = weather, let temperature = weather.temperature {
-            let temperatureDescription = temperature < 10 ? "cold" :
-                                        temperature < 18 ? "cool" :
-                                        temperature < 25 ? "mild" : "warm"
-            
-            let weatherReasons = [
-                "Appropriate for \(temperatureDescription) weather",
-                "Comfortable in \(temperatureDescription) temperatures",
-                "Suitable for \(temperatureDescription) conditions"
-            ]
-            reason += ". " + weatherReasons.randomElement()!
-        }
-        
-        return reason
+    private func generateBrandRecommendations(basedOn: [String], styles: [StyleTag]) -> [String] {
+        // In a real implementation, this would use a database of brands and their style associations
+        // For now, return some random brands
+        return ["Nike", "Adidas", "Zara", "H&M", "Uniqlo"]
     }
     
-    private func generateBrandRecommendations(basedOn brands: [String], styles: [StyleTag]) -> [String] {
-        // This would normally use a database of related brands
-        // For now, just return some mock recommendations
-        let mockBrands = [
-            "Everlane",
-            "Madewell",
-            "Reformation",
-            "Uniqlo",
-            "Zara",
-            "H&M",
-            "COS",
-            "& Other Stories",
-            "Urban Outfitters",
-            "Anthropologie"
-        ]
-        
-        return Array(mockBrands.shuffled().prefix(3))
-    }
-    
-    private func generateStyleRecommendations(basedOn styles: [StyleTag]) -> [StyleTag] {
-        // This would normally identify complementary or trending styles
-        // For now, return some styles that aren't in the input
-        var recommendations: [StyleTag] = []
-        let allStyles = Set(StyleTag.allCases)
-        let currentStyles = Set(styles)
-        let availableStyles = allStyles.subtracting(currentStyles)
-        
-        return Array(availableStyles.shuffled().prefix(2))
+    private func generateStyleRecommendations(basedOn: [StyleTag]) -> [StyleTag] {
+        // In a real implementation, this would use style compatibility rules
+        // For now, return some random styles
+        return Array(Set(StyleTag.allCases).subtracting(Set(basedOn)))
     }
     
     private func determineSeason() -> Season {
-        // In a real app, this would use the current date
-        // For now, just return a random season
-        return Season.allCases.randomElement()!
+        let month = Calendar.current.component(.month, from: Date())
+        switch month {
+        case 12, 1, 2:
+            return .winter
+        case 3, 4, 5:
+            return .spring
+        case 6, 7, 8:
+            return .summer
+        case 9, 10, 11:
+            return .fall
+        default:
+            return .summer
+        }
     }
 } 

@@ -9,9 +9,6 @@ struct CreateOutfitView: View {
     @State private var name = ""
     @State private var selectedItems = Set<ClothingItem>()
     @State private var notes = ""
-    @State private var minTemperature: Double?
-    @State private var maxTemperature: Double?
-    @State private var selectedWeatherTags = Set<WeatherTag>()
     @State private var selectedStyleTags = Set<StyleTag>()
     
     var body: some View {
@@ -22,48 +19,6 @@ struct CreateOutfitView: View {
                     
                     TextEditor(text: $notes)
                         .frame(minHeight: 100)
-                }
-                
-                Section("Weather Suitability") {
-                    HStack {
-                        Text("Min Temp (°C)")
-                        Spacer()
-                        TextField("Min", value: $minTemperature, format: .number)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                            .frame(width: 80)
-                    }
-                    
-                    HStack {
-                        Text("Max Temp (°C)")
-                        Spacer()
-                        TextField("Max", value: $maxTemperature, format: .number)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                            .frame(width: 80)
-                    }
-                    
-                    VStack(alignment: .leading) {
-                        Text("Weather Tags")
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack {
-                                ForEach(WeatherTag.allCases, id: \.self) { tag in
-                                    Toggle(tag.rawValue.capitalized, isOn: Binding(
-                                        get: { selectedWeatherTags.contains(tag) },
-                                        set: { isOn in
-                                            if isOn {
-                                                selectedWeatherTags.insert(tag)
-                                            } else {
-                                                selectedWeatherTags.remove(tag)
-                                            }
-                                        }
-                                    ))
-                                    .toggleStyle(.button)
-                                    .buttonStyle(.bordered)
-                                }
-                            }
-                        }
-                    }
                 }
                 
                 Section("Style") {
@@ -139,9 +94,6 @@ struct CreateOutfitView: View {
             items: Array(selectedItems),
             dateCreated: Date(),
             notes: notes.isEmpty ? nil : notes,
-            minTemperature: minTemperature,
-            maxTemperature: maxTemperature,
-            weatherTags: Array(selectedWeatherTags),
             styleTags: Array(selectedStyleTags)
         )
         

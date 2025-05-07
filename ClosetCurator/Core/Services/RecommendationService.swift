@@ -18,7 +18,6 @@ actor RecommendationService {
     /// Enhanced recommendation method that integrates style preferences
     func generateRecommendations(
         outfits: [Outfit],
-        weatherTags: [WeatherTag],
         stylePreference: StylePreference?,
         limit: Int = 5,
         modelContext: ModelContext
@@ -27,7 +26,6 @@ actor RecommendationService {
         if let stylePreference = stylePreference {
             return try await generateEnhancedRecommendations(
                 outfits: outfits,
-                weatherTags: weatherTags,
                 stylePreference: stylePreference,
                 limit: limit,
                 modelContext: modelContext
@@ -38,7 +36,6 @@ actor RecommendationService {
         let userPreferences = stylePreference?.favoriteStyles ?? []
         return try await generateBasicRecommendations(
             outfits: outfits,
-            weatherTags: weatherTags,
             userPreferences: userPreferences,
             limit: limit
         )
@@ -47,7 +44,6 @@ actor RecommendationService {
     /// Basic recommendation algorithm (legacy)
     private func generateBasicRecommendations(
         outfits: [Outfit],
-        weatherTags: [WeatherTag],
         userPreferences: [StyleTag],
         limit: Int = 5
     ) async throws -> [Outfit] {
@@ -56,10 +52,6 @@ actor RecommendationService {
         
         var scoredOutfits = outfits.map { outfit -> (outfit: Outfit, score: Double) in
             var score = 0.0
-            
-            // Weather compatibility score
-            let weatherMatchCount = Set(outfit.weatherTags).intersection(Set(weatherTags)).count
-            score += Double(weatherMatchCount) * 2.0
             
             // Style preference score
             let styleMatchCount = Set(outfit.styleTags).intersection(Set(userPreferences)).count
@@ -90,18 +82,13 @@ actor RecommendationService {
     /// Enhanced recommendation algorithm that integrates with the style system
     private func generateEnhancedRecommendations(
         outfits: [Outfit],
-        weatherTags: [WeatherTag],
         stylePreference: StylePreference,
         limit: Int = 5,
         modelContext: ModelContext
     ) async throws -> [Outfit] {
-        // Convert weather tags to Weather object for StyleRecommendationService
-        let weather = convertToWeather(from: weatherTags)
-        
         // Get style recommendations
         let styleRecommendations = try await styleRecommendationService.generateOutfitRecommendations(
             preferences: stylePreference,
-            weatherConditions: weather,
             occasion: nil,
             modelContext: modelContext
         )
@@ -129,7 +116,6 @@ actor RecommendationService {
         if recommendedOutfits.count < limit {
             let scoredOutfits = scoreOutfitsWithStylePreference(
                 outfits: outfits.filter { !recommendedOutfits.contains($0) },
-                weatherTags: weatherTags,
                 stylePreference: stylePreference
             )
             
@@ -146,15 +132,10 @@ actor RecommendationService {
     /// Score outfits using style preference data
     private func scoreOutfitsWithStylePreference(
         outfits: [Outfit],
-        weatherTags: [WeatherTag],
         stylePreference: StylePreference
     ) -> [(outfit: Outfit, score: Double)] {
         let scoredOutfits = outfits.map { outfit -> (outfit: Outfit, score: Double) in
             var score = 0.0
-            
-            // Weather compatibility score
-            let weatherMatchCount = Set(outfit.weatherTags).intersection(Set(weatherTags)).count
-            score += Double(weatherMatchCount) * 2.0
             
             // Style tag preference score
             let styleMatchCount = Set(outfit.styleTags).intersection(Set(stylePreference.favoriteStyles)).count
@@ -206,38 +187,6 @@ actor RecommendationService {
         return bestMatch?.outfit
     }
     
-    /// Convert weather tags to a Weather object
-    private func convertToWeather(from tags: [WeatherTag]) -> Weather {
-        var temperature: Double?
-        var condition: String?
-        
-        for tag in tags {
-            switch tag {
-            case .hot:
-                temperature = 30.0
-            case .warm:
-                temperature = 25.0
-            case .cool:
-                temperature = 15.0
-            case .cold:
-                temperature = 5.0
-            case .rainy:
-                condition = "Rainy"
-            case .snowy:
-                condition = "Snowy"
-                temperature = temperature ?? 0.0
-            }
-        }
-        
-        return Weather(
-            temperature: temperature,
-            condition: condition,
-            humidity: nil,
-            windSpeed: nil,
-            location: nil
-        )
-    }
-    
     func updateModel(with feedback: OutfitFeedback) async throws {
         // TODO: Implement model updating based on user feedback
         // This will be implemented when we have a trained model that supports updating
@@ -249,39 +198,13 @@ actor RecommendationService {
         stylePreference: StylePreference,
         modelContext: ModelContext
     ) async throws {
-        // Update the adventure level based on feedback response
-        var adventureLevel = stylePreference.adventureLevel
-        
-        switch feedback.response {
-        case .liked:
-            // If they liked it, increase adventure level slightly for future recommendations
-            adventureLevel = min(adventureLevel + 0.05, 1.0)
-        case .disliked:
-            // If they disliked it, decrease adventure level
-            adventureLevel = max(adventureLevel - 0.1, 0.1)
-        case .tried, .purchased:
-            // If they tried or purchased, increase adventure level more significantly
-            adventureLevel = min(adventureLevel + 0.1, 1.0)
-        case .saved:
-            // If they saved it, increase adventure level slightly
-            adventureLevel = min(adventureLevel + 0.03, 1.0)
-        case .ignored:
-            // If ignored, slight decrease
-            adventureLevel = max(adventureLevel - 0.02, 0.1)
-        }
-        
-        // Update the style preference
-        stylePreference.updateAdventureLevel(newLevel: adventureLevel)
-        
-        // Save the changes
-        try modelContext.save()
+        // TODO: Implement style feedback processing
     }
 }
 
 struct OutfitFeedback {
     let outfit: Outfit
     let rating: Int
-    let weatherTags: [WeatherTag]
     let styleTags: [StyleTag]
     let date: Date
 } 

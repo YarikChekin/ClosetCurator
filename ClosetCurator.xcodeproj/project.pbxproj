@@ -102,6 +102,7 @@
 		5BD2F3D8B5DD48B8BC5ECFBB /* StylePreferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StylePreferenceTests.swift; sourceTree = "<group>"; };
 		6236E1BB9C0B0AA62B8B7F74 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		62B0CF6308176BAEA9C98568 /* ImageServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageServiceTests.swift; sourceTree = "<group>"; };
+		63A7A068D2EC948011CA414A /* .gitignore */ = {isa = PBXFileReference; path = .gitignore; sourceTree = "<group>"; };
 		6A7ED26662CA585E25517D55 /* CreateOutfitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOutfitView.swift; sourceTree = "<group>"; };
 		6AC1D3EC7367F6994739DFAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6AE1AB200599746264687FD4 /* RecommendationServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationServiceTests.swift; sourceTree = "<group>"; };
@@ -261,16 +262,10 @@
 			path = Style;
 			sourceTree = "<group>";
 		};
-		74688594BA17E2219A43ED9E /* Network */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Network;
-			sourceTree = "<group>";
-		};
 		7CAD5F67016DEC6F1E0F62E5 /* ClosetCurator */ = {
 			isa = PBXGroup;
 			children = (
+				63A7A068D2EC948011CA414A /* .gitignore */,
 				181EB1B559C3A241C822B2C1 /* Assets.xcassets */,
 				80A43F8C0D525EDBA036E99E /* ClosetCuratorApp.swift */,
 				5506D91345BA6E400504BF2F /* Info.plist */,
@@ -355,7 +350,6 @@
 			children = (
 				E17B17748C087A0B0F7924BE /* Data */,
 				04F8192F934B2F21EAC4D84F /* ML */,
-				74688594BA17E2219A43ED9E /* Network */,
 				24AB5BE9E5F68B3DA6EEF877 /* Services */,
 				6E746D204F058212F98F5275 /* Style */,
 				334CA1EE35ABD3D69C4FFAC7 /* Utilities */,
