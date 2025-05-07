@@ -39,7 +39,7 @@ class StyleRecommendationService {
             if let requiredOccasion = occasion {
                 // This would normally check outfit occasion tags
                 // For now, just randomly include some outfits
-                if Bool.random(in: 0...1) == false {
+                if Bool.random() == false {
                     continue
                 }
             }
@@ -150,7 +150,7 @@ class StyleRecommendationService {
         // Generate specific item recommendations
         for category in ClothingCategory.allCases {
             // Only recommend some categories
-            if Bool.random(in: 0...1) == false {
+            if Bool.random() == false {
                 continue
             }
             
