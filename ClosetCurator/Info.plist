@@ -20,10 +20,6 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We need access to your photos to add clothing items to your digital closet.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>We need access to your camera to take photos of clothing items.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

@@ -2,7 +2,6 @@ import SwiftUI
 import SwiftData
 
 struct OutfitSuggestionsView: View {
-    @EnvironmentObject private var weatherService: WeatherService
     @StateObject private var viewModel = OutfitSuggestionsViewModel()
     @State private var showFeedback = false
     @State private var selectedOutfit: Outfit?
@@ -11,10 +10,6 @@ struct OutfitSuggestionsView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    // Weather Card
-                    WeatherCardView()
-                        .padding(.horizontal)
-                    
                     // Today's Suggestions
                     VStack(alignment: .leading) {
                         Text("Today's Suggestions")
@@ -72,45 +67,6 @@ struct OutfitSuggestionsView: View {
                 await viewModel.loadSuggestions()
             }
         }
-    }
-}
-
-struct WeatherCardView: View {
-    @EnvironmentObject private var weatherService: WeatherService
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                VStack(alignment: .leading) {
-                    if let temp = weatherService.getCurrentTemperature() {
-                        Text("\(Int(temp))°")
-                            .font(.system(size: 48, weight: .bold))
-                    }
-                    
-                    Text(weatherService.getCurrentConditions().map { $0.rawValue }.joined(separator: ", "))
-                        .font(.subheadline)
-                }
-                
-                Spacer()
-                
-                // Weather icon based on conditions
-                Image(systemName: weatherIcon)
-                    .font(.system(size: 48))
-            }
-        }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(15)
-        .shadow(radius: 5)
-    }
-    
-    private var weatherIcon: String {
-        let conditions = weatherService.getCurrentConditions()
-        if conditions.contains(.rainy) { return "cloud.rain.fill" }
-        if conditions.contains(.snowy) { return "cloud.snow.fill" }
-        if conditions.contains(.cloudy) { return "cloud.fill" }
-        if conditions.contains(.sunny) { return "sun.max.fill" }
-        return "cloud.fill"
     }
 }
 
