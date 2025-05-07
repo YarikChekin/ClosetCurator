@@ -7,7 +7,7 @@ final class OnboardingManager: ObservableObject {
     @AppStorage("hasCompletedOnboarding") private(set) var hasCompletedOnboarding: Bool = false
     @AppStorage("onboardingStep") private(set) var currentStep: Int = 0
     
-    private(set) var totalSteps: Int { 4 } // Welcome, Style, Closet, Permissions
+    var totalSteps: Int { 4 } // Welcome, Style, Closet, Permissions
     
     private init() {
         DebugLogger.info("OnboardingManager initialized")
