@@ -8,7 +8,7 @@ final class StyleBoard {
     var name: String
     var createdAt: Date
     var updatedAt: Date
-    var description: String?
+    var boardDescription: String?
     var season: Season?
     var occasion: Occasion?
     var mood: String?
@@ -30,7 +30,7 @@ final class StyleBoard {
         name: String,
         createdAt: Date = Date(),
         updatedAt: Date = Date(),
-        description: String? = nil,
+        boardDescription: String? = nil,
         season: Season? = nil,
         occasion: Occasion? = nil,
         mood: String? = nil,
@@ -44,7 +44,7 @@ final class StyleBoard {
         self.name = name
         self.createdAt = createdAt
         self.updatedAt = updatedAt
-        self.description = description
+        self.boardDescription = boardDescription
         self.season = season
         self.occasion = occasion
         self.mood = mood

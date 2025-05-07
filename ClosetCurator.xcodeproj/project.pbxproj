@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 63;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -87,7 +87,7 @@
 
 /* Begin PBXFileReference section */
 		13092671F114219DB224BB8B /* RecommendationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationService.swift; sourceTree = "<group>"; };
-		1756CAF1F2D8EDDA4C6BAE53 /* SwiftUI */ = {isa = PBXFileReference; lastKnownFileType = text; path = SwiftUI; sourceTree = "<group>"; };
+		1756CAF1F2D8EDDA4C6BAE53 /* SwiftUI */ = {isa = PBXFileReference; path = SwiftUI; sourceTree = "<group>"; };
 		181EB1B559C3A241C822B2C1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1E953C09295DF11D083C1980 /* AddClothingItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddClothingItemView.swift; sourceTree = "<group>"; };
 		1F1F596A01DB436987A091C8 /* OnboardingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingManager.swift; sourceTree = "<group>"; };
@@ -96,13 +96,13 @@
 		3E111CFF1F5540724286BD08 /* StyleBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleBoardView.swift; sourceTree = "<group>"; };
 		3EDCE3ECBFBBA2E8C3095D22 /* Outfit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Outfit.swift; sourceTree = "<group>"; };
 		451BAC609CC4A90385EECB59 /* StylePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StylePreference.swift; sourceTree = "<group>"; };
-		4C78D22BEA1CCA4B96FA178A /* ClosetCuratorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClosetCuratorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C78D22BEA1CCA4B96FA178A /* ClosetCuratorTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ClosetCuratorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FB8A5C6D6B08D36449F3B0B /* ClothingItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClothingItem.swift; sourceTree = "<group>"; };
 		5506D91345BA6E400504BF2F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		5BD2F3D8B5DD48B8BC5ECFBB /* StylePreferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StylePreferenceTests.swift; sourceTree = "<group>"; };
 		6236E1BB9C0B0AA62B8B7F74 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		62B0CF6308176BAEA9C98568 /* ImageServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageServiceTests.swift; sourceTree = "<group>"; };
-		63A7A068D2EC948011CA414A /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		63A7A068D2EC948011CA414A /* .gitignore */ = {isa = PBXFileReference; path = .gitignore; sourceTree = "<group>"; };
 		6A7ED26662CA585E25517D55 /* CreateOutfitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOutfitView.swift; sourceTree = "<group>"; };
 		6AC1D3EC7367F6994739DFAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6AE1AB200599746264687FD4 /* RecommendationServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationServiceTests.swift; sourceTree = "<group>"; };
@@ -113,7 +113,7 @@
 		772E9361DF3BDB1F10D23DFF /* OutfitServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitServiceTests.swift; sourceTree = "<group>"; };
 		80A43F8C0D525EDBA036E99E /* ClosetCuratorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosetCuratorApp.swift; sourceTree = "<group>"; };
 		8576F13D90CECD50A4243ACA /* ClothingClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClothingClassifier.swift; sourceTree = "<group>"; };
-		87463F153D77FA6F38B00C9B /* SwiftData */ = {isa = PBXFileReference; lastKnownFileType = text; path = SwiftData; sourceTree = "<group>"; };
+		87463F153D77FA6F38B00C9B /* SwiftData */ = {isa = PBXFileReference; path = SwiftData; sourceTree = "<group>"; };
 		8AA353E6D408534C50CFEC36 /* StyleFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleFeedback.swift; sourceTree = "<group>"; };
 		96351188BDEECAB96DBE45CF /* StyleAnalysisService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleAnalysisService.swift; sourceTree = "<group>"; };
 		9784B23DF91B977C41ADBA60 /* ClothingDetectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClothingDetectionService.swift; sourceTree = "<group>"; };
@@ -127,11 +127,11 @@
 		D61A95855A98E073612F7256 /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		D66409B02F0EBB887761DDF2 /* RecommendationEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationEngineTests.swift; sourceTree = "<group>"; };
 		D80A3F46B4F8A28AB8A804A5 /* CameraCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraCaptureView.swift; sourceTree = "<group>"; };
-		DC616195DD45EB790DA1B75C /* UserNotifications */ = {isa = PBXFileReference; lastKnownFileType = text; path = UserNotifications; sourceTree = "<group>"; };
-		DCD6EFE0CA2B9C83AEE158F5 /* ClosetCurator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClosetCurator.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DC616195DD45EB790DA1B75C /* UserNotifications */ = {isa = PBXFileReference; path = UserNotifications; sourceTree = "<group>"; };
+		DCD6EFE0CA2B9C83AEE158F5 /* ClosetCurator.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ClosetCurator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD60FE6EF43E36C9F01D313D /* StyleBoardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleBoardTests.swift; sourceTree = "<group>"; };
 		E19501E06BED8E7E97B9EE30 /* StyleBoardDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleBoardDetailView.swift; sourceTree = "<group>"; };
-		E86AA566A7F11196CFAEC04C /* ClosetCuratorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClosetCuratorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E86AA566A7F11196CFAEC04C /* ClosetCuratorUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ClosetCuratorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5B900EE0FEFE6DCB06984AB /* StyleIntegratedRecommendationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleIntegratedRecommendationTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -484,7 +484,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1630;
+				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					D31D7C7C650B16A9865A6C30 = {
 						DevelopmentTeam = Yarik;
@@ -504,6 +504,7 @@
 			);
 			mainGroup = 19D14C8E614B97790B43795F;
 			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 54;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -636,7 +637,6 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -710,7 +710,6 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
