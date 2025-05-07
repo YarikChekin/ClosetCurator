@@ -1,7 +1,6 @@
 import SwiftUI
 import SwiftData
 import PhotosUI
-import DesignTokens
 
 struct StyleBoardView: View {
     @Environment(\.modelContext) private var modelContext

@@ -1,6 +1,5 @@
 import SwiftUI
 import SwiftData
-import DesignTokens
 
 struct ContentView: View {
     @State private var selectedTab = 0
@@ -118,62 +117,6 @@ struct ClothingItemRow: View {
                     .foregroundColor(.secondary)
             }
         }
-    }
-}
-
-struct OutfitsView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var outfits: [Outfit]
-    @State private var showingAddOutfit = false
-    
-    var body: some View {
-        NavigationStack {
-            List {
-                ForEach(outfits) { outfit in
-                    OutfitRow(outfit: outfit)
-                }
-                .onDelete(perform: deleteOutfits)
-            }
-            .navigationTitle("My Outfits")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { showingAddOutfit = true }) {
-                        Label("Create Outfit", systemImage: "plus")
-                    }
-                }
-            }
-            .sheet(isPresented: $showingAddOutfit) {
-                CreateOutfitView()
-            }
-        }
-    }
-    
-    private func deleteOutfits(at offsets: IndexSet) {
-        let outfitsToDelete = offsets.map { outfits[$0] }
-        for outfit in outfitsToDelete {
-            modelContext.delete(outfit)
-        }
-    }
-}
-
-struct OutfitRow: View {
-    let outfit: Outfit
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            Text(outfit.name)
-                .font(.headline)
-            
-            Text(formattedDate(outfit.dateCreated))
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-        }
-    }
-    
-    private func formattedDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        return formatter.string(from: date)
     }
 }
 

@@ -1,7 +1,6 @@
 import SwiftUI
 import SwiftData
 import PhotosUI
-import DesignTokens
 
 struct AddClothingItemView: View {
     @Environment(\.dismiss) private var dismiss

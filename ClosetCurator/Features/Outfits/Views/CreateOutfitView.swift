@@ -1,6 +1,5 @@
 import SwiftUI
 import SwiftData
-import DesignTokens
 
 struct CreateOutfitView: View {
     @Environment(\.dismiss) private var dismiss

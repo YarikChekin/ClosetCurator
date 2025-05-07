@@ -1,6 +1,5 @@
 import SwiftUI
 import SwiftData
-import DesignTokens
 
 struct OutfitsView: View {
     @Environment(\.modelContext) private var modelContext
@@ -10,20 +9,8 @@ struct OutfitsView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section("Favorites") {
-                    let favoriteOutfits = outfits.filter { $0.isFavorite }
-                    ForEach(favoriteOutfits) { outfit in
-                        OutfitRow(outfit: outfit)
-                    }
-                }
-                
-                Section("Recent") {
-                    let recentOutfits = outfits
-                        .filter { !$0.isFavorite }
-                        .sorted { ($0.lastWorn ?? .distantPast) > ($1.lastWorn ?? .distantPast) }
-                    ForEach(recentOutfits) { outfit in
-                        OutfitRow(outfit: outfit)
-                    }
+                ForEach(outfits) { outfit in
+                    OutfitRow(outfit: outfit)
                 }
             }
             .navigationTitle("My Outfits")

@@ -1,6 +1,5 @@
 import SwiftUI
 import SwiftData
-import DesignTokens
 
 struct RecommendationsView: View {
     @Environment(\.modelContext) private var modelContext
