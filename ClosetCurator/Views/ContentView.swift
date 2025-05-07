@@ -36,6 +36,12 @@ struct ContentView: View {
                 }
                 .tag(4)
         }
+        .onChange(of: selectedTab) { oldValue, newValue in
+            DebugLogger.info("Tab changed from \(oldValue) to \(newValue)")
+        }
+        .onAppear {
+            DebugLogger.info("ContentView appeared")
+        }
     }
 }
 
@@ -71,11 +77,19 @@ struct ClosetView: View {
             .sheet(isPresented: $showingAddItem) {
                 AddClothingItemView()
             }
+            .onAppear {
+                DebugLogger.info("ClosetView appeared with \(items.count) items")
+                for category in ClothingCategory.allCases {
+                    let count = items.filter { $0.category == category }.count
+                    DebugLogger.info("  - \(category.rawValue): \(count) items")
+                }
+            }
         }
     }
     
     private func deleteItems(_ items: [ClothingItem], at offsets: IndexSet) {
         for index in offsets {
+            DebugLogger.info("Deleting item: \(items[index].name)")
             modelContext.delete(items[index])
         }
     }

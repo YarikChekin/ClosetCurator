@@ -16,6 +16,7 @@
 		1A2440D65EC5AACD7E6F03FB /* SwiftData in Frameworks */ = {isa = PBXBuildFile; fileRef = 87463F153D77FA6F38B00C9B /* SwiftData */; };
 		2058C07BD57DACB850D6D86E /* ClothingItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB8A5C6D6B08D36449F3B0B /* ClothingItem.swift */; };
 		24C3516C9A7E5CFB7C48BF54 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 181EB1B559C3A241C822B2C1 /* Assets.xcassets */; };
+		3A0611984371B3021E738540 /* DebugLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC199E28B91D9DDA5BE4127E /* DebugLogger.swift */; };
 		4A6191E4ECB1954158B52710 /* OnboardingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F1F596A01DB436987A091C8 /* OnboardingManager.swift */; };
 		5BD1BFA21CA104D73CB56558 /* StylePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451BAC609CC4A90385EECB59 /* StylePreference.swift */; };
 		5C0854F19526B434E576C4ED /* StyleBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E111CFF1F5540724286BD08 /* StyleBoardView.swift */; };
@@ -118,6 +119,7 @@
 		A157959195903F7B5358975E /* ClosetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosetView.swift; sourceTree = "<group>"; };
 		AB2575D61C39A1A8A1C7F620 /* CreateStyleBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateStyleBoardView.swift; sourceTree = "<group>"; };
 		AC021AD595E45B8D7865B4C7 /* StyleRecommendationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleRecommendationService.swift; sourceTree = "<group>"; };
+		AC199E28B91D9DDA5BE4127E /* DebugLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLogger.swift; sourceTree = "<group>"; };
 		AE98F13C0A2C2599863094CB /* AddFromScreenshotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFromScreenshotView.swift; sourceTree = "<group>"; };
 		B33E024D2E9A2B1AA559AD63 /* OnboardingManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingManagerTests.swift; sourceTree = "<group>"; };
 		C40E6DB3DA1156B63E420A81 /* StyleBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleBoard.swift; sourceTree = "<group>"; };
@@ -205,6 +207,14 @@
 				13092671F114219DB224BB8B /* RecommendationService.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		334CA1EE35ABD3D69C4FFAC7 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				AC199E28B91D9DDA5BE4127E /* DebugLogger.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		3F20549EA25BE2105B6B3C90 /* Style */ = {
@@ -348,6 +358,7 @@
 				74688594BA17E2219A43ED9E /* Network */,
 				24AB5BE9E5F68B3DA6EEF877 /* Services */,
 				6E746D204F058212F98F5275 /* Style */,
+				334CA1EE35ABD3D69C4FFAC7 /* Utilities */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -560,6 +571,7 @@
 				7B383D3FCE302CD63BB6C78D /* ContentView.swift in Sources */,
 				09A1260A186A0A3AE153664C /* CreateOutfitView.swift in Sources */,
 				8DCF36C8034E1F6843E2296F /* CreateStyleBoardView.swift in Sources */,
+				3A0611984371B3021E738540 /* DebugLogger.swift in Sources */,
 				C21C27646F13D8A55AB51755 /* ImageService.swift in Sources */,
 				4A6191E4ECB1954158B52710 /* OnboardingManager.swift in Sources */,
 				BDD8E9E79FA854C6F32DDDDD /* OnboardingView.swift in Sources */,

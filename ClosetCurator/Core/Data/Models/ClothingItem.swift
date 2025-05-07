@@ -58,6 +58,17 @@ final class ClothingItem {
         self.favorite = favorite
         self.mlConfidence = mlConfidence
         self.styleTags = styleTags
+        
+        DebugLogger.info("ClothingItem initialized: \(name) (ID: \(id))")
+        if let url = imageURL {
+            DebugLogger.info("  - Image URL: \(url)")
+            // Check if the image file exists
+            if FileManager.default.fileExists(atPath: url.path) {
+                DebugLogger.info("  - Image file exists")
+            } else {
+                DebugLogger.error("  - Image file does not exist at path: \(url.path)")
+            }
+        }
     }
     
     // MARK: - Usage Tracking
@@ -65,6 +76,7 @@ final class ClothingItem {
     func markAsWorn() {
         wearCount += 1
         lastWorn = Date()
+        DebugLogger.info("Item marked as worn: \(name), count: \(wearCount)")
     }
 }
 
