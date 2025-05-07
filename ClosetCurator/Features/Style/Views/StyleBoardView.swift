@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import PhotosUI
+import DesignTokens
 
 struct StyleBoardView: View {
     @Environment(\.modelContext) private var modelContext
@@ -58,44 +59,46 @@ struct StyleBoardRow: View {
     let board: StyleBoard
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: DesignTokens.spacing8) {
             Text(board.name)
                 .font(.headline)
             
             if let description = board.description, !description.isEmpty {
                 Text(description)
                     .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(DesignTokens.secondaryColor)
                     .lineLimit(1)
             }
             
-            HStack {
+            HStack(spacing: DesignTokens.spacing8) {
                 if let season = board.season {
                     Text(season.rawValue.capitalized)
                         .font(.caption)
-                        .padding(.horizontal, 8)
+                        .padding(.horizontal, DesignTokens.spacing8)
                         .padding(.vertical, 2)
                         .background(Color.blue.opacity(0.1))
-                        .clipShape(RoundedRectangle(cornerRadius: 4))
+                        .clipShape(RoundedRectangle(cornerRadius: DesignTokens.cardCornerRadius))
                 }
                 
                 if let occasion = board.occasion {
                     Text(occasion.rawValue.capitalized)
                         .font(.caption)
-                        .padding(.horizontal, 8)
+                        .padding(.horizontal, DesignTokens.spacing8)
                         .padding(.vertical, 2)
                         .background(Color.purple.opacity(0.1))
-                        .clipShape(RoundedRectangle(cornerRadius: 4))
+                        .clipShape(RoundedRectangle(cornerRadius: DesignTokens.cardCornerRadius))
                 }
                 
                 Spacer()
                 
                 Text("\(board.items.count) items")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(DesignTokens.secondaryColor)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, DesignTokens.spacing8)
+        .contentShape(Rectangle())
+        .frame(minHeight: DesignTokens.minTappable)
     }
 }
 

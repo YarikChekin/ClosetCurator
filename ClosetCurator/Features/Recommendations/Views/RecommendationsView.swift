@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import DesignTokens
 
 struct RecommendationsView: View {
     @Environment(\.modelContext) private var modelContext
@@ -106,6 +107,7 @@ struct RecommendationsView: View {
                     }) {
                         Image(systemName: "tshirt")
                     }
+                    .frame(minWidth: DesignTokens.minTappable, minHeight: DesignTokens.minTappable)
                 }
                 
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -116,6 +118,7 @@ struct RecommendationsView: View {
                     } label: {
                         Image(systemName: "arrow.clockwise")
                     }
+                    .frame(minWidth: DesignTokens.minTappable, minHeight: DesignTokens.minTappable)
                 }
             }
             .task {

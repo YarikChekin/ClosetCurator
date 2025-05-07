@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import DesignTokens
 
 struct CreateOutfitView: View {
     @Environment(\.dismiss) private var dismiss
@@ -76,6 +77,7 @@ struct CreateOutfitView: View {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .frame(minWidth: DesignTokens.minTappable, minHeight: DesignTokens.minTappable)
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
@@ -83,6 +85,7 @@ struct CreateOutfitView: View {
                         saveOutfit()
                     }
                     .disabled(name.isEmpty || selectedItems.isEmpty)
+                    .frame(minWidth: DesignTokens.minTappable, minHeight: DesignTokens.minTappable)
                 }
             }
         }

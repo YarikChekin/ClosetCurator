@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import DesignTokens
 
 struct OutfitsView: View {
     @Environment(\.modelContext) private var modelContext
@@ -44,11 +45,11 @@ struct OutfitRow: View {
     let outfit: Outfit
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: DesignTokens.spacing8) {
             Text(outfit.name)
                 .font(.headline)
             
-            HStack {
+            HStack(spacing: DesignTokens.spacing8) {
                 ForEach(outfit.items.prefix(3)) { item in
                     if let imageURL = item.imageURL {
                         AsyncImage(url: imageURL) { image in
@@ -58,25 +59,27 @@ struct OutfitRow: View {
                         } placeholder: {
                             Color.gray
                         }
-                        .frame(width: 40, height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                        .frame(width: DesignTokens.spacing32, height: DesignTokens.spacing32)
+                        .clipShape(RoundedRectangle(cornerRadius: DesignTokens.cardCornerRadius))
                     }
                 }
                 
                 if outfit.items.count > 3 {
                     Text("+\(outfit.items.count - 3)")
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(DesignTokens.secondaryColor)
                 }
             }
             
             if let lastWorn = outfit.lastWorn {
                 Text("Last worn: \(lastWorn.formatted(date: .abbreviated, time: .omitted))")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(DesignTokens.secondaryColor)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, DesignTokens.spacing8)
+        .contentShape(Rectangle())
+        .frame(minHeight: DesignTokens.minTappable)
     }
 }
 

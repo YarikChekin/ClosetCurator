@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import PhotosUI
+import DesignTokens
 
 struct AddClothingItemView: View {
     @Environment(\.dismiss) private var dismiss
@@ -80,6 +81,7 @@ struct AddClothingItemView: View {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .frame(minWidth: DesignTokens.minTappable, minHeight: DesignTokens.minTappable)
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
@@ -87,6 +89,7 @@ struct AddClothingItemView: View {
                         saveItem()
                     }
                     .disabled(name.isEmpty || color.isEmpty)
+                    .frame(minWidth: DesignTokens.minTappable, minHeight: DesignTokens.minTappable)
                 }
             }
             .sheet(isPresented: $showingCamera) {

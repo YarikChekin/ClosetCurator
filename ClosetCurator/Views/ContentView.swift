@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import DesignTokens
 
 struct ContentView: View {
     @State private var selectedTab = 0

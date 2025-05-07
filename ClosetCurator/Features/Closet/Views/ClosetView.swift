@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import DesignTokens
 
 struct ClosetView: View {
     @Environment(\.modelContext) private var modelContext
@@ -47,7 +48,7 @@ struct ClothingItemRow: View {
     let item: ClothingItem
     
     var body: some View {
-        HStack {
+        HStack(spacing: DesignTokens.spacing16) {
             if let imageURL = item.imageURL {
                 AsyncImage(url: imageURL) { image in
                     image
@@ -56,24 +57,27 @@ struct ClothingItemRow: View {
                 } placeholder: {
                     Color.gray
                 }
-                .frame(width: 50, height: 50)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .frame(width: DesignTokens.minTappable, height: DesignTokens.minTappable)
+                .clipShape(RoundedRectangle(cornerRadius: DesignTokens.cardCornerRadius))
             } else {
-                RoundedRectangle(cornerRadius: 8)
+                RoundedRectangle(cornerRadius: DesignTokens.cardCornerRadius)
                     .fill(Color.gray.opacity(0.3))
-                    .frame(width: 50, height: 50)
+                    .frame(width: DesignTokens.minTappable, height: DesignTokens.minTappable)
             }
             
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: DesignTokens.spacing8) {
                 Text(item.name)
                     .font(.headline)
                 if let brand = item.brand {
                     Text(brand)
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(DesignTokens.secondaryColor)
                 }
             }
         }
+        .padding(.vertical, DesignTokens.spacing8)
+        .contentShape(Rectangle())
+        .frame(minHeight: DesignTokens.minTappable)
     }
 }
 

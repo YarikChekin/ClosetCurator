@@ -24,6 +24,11 @@ An intelligent iOS app that digitizes your closet and provides personalized outf
   - User feedback on recommendations
   - Style preference refinement
 
+## Design
+
+We follow Apple's Human Interface Guidelines.  
+See [DESIGN_GUIDELINES.md](./DESIGN_GUIDELINES.md) for details.
+
 ## Technical Stack
 
 - **Frontend**: SwiftUI (iOS 17+)

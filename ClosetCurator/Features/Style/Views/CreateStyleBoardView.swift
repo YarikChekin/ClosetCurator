@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import DesignTokens
 
 struct CreateStyleBoardView: View {
     @Environment(\.modelContext) private var modelContext
@@ -52,6 +53,7 @@ struct CreateStyleBoardView: View {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .frame(minWidth: DesignTokens.minTappable, minHeight: DesignTokens.minTappable)
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
@@ -59,6 +61,7 @@ struct CreateStyleBoardView: View {
                         createStyleBoard()
                     }
                     .disabled(name.isEmpty)
+                    .frame(minWidth: DesignTokens.minTappable, minHeight: DesignTokens.minTappable)
                 }
             }
         }
