@@ -45,13 +45,9 @@ final class StyleIntegratedRecommendationTests: XCTestCase {
         
         try modelContext.save()
         
-        // Create weather tags for testing
-        let weatherTags: [WeatherTag] = [.warm, .sunny]
-        
         // Generate recommendations using the RecommendationService
         let recommendations = try await RecommendationService.shared.generateRecommendations(
             outfits: outfits,
-            weatherTags: weatherTags,
             stylePreference: stylePreference,
             limit: 3,
             modelContext: modelContext
@@ -65,10 +61,6 @@ final class StyleIntegratedRecommendationTests: XCTestCase {
             // Check if the outfit contains at least one style tag that matches the preference
             let matchingStyles = Set(outfit.styleTags).intersection(Set(stylePreference.favoriteStyles))
             XCTAssertFalse(matchingStyles.isEmpty, "Recommended outfit should match at least one preferred style")
-            
-            // Check if the outfit contains at least one weather tag that matches
-            let matchingWeather = Set(outfit.weatherTags).intersection(Set(weatherTags))
-            XCTAssertFalse(matchingWeather.isEmpty, "Recommended outfit should match weather conditions")
         }
     }
     
@@ -97,10 +89,8 @@ final class StyleIntegratedRecommendationTests: XCTestCase {
         try modelContext.save()
         
         // Generate recommendations
-        let weatherTags: [WeatherTag] = [.warm, .sunny]
         let recommendations = try await RecommendationService.shared.generateRecommendations(
             outfits: outfits,
-            weatherTags: weatherTags,
             stylePreference: stylePreference,
             limit: 3,
             modelContext: modelContext
