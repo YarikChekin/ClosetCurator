@@ -3,7 +3,7 @@ import PhotosUI
 
 struct AddFromScreenshotView: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject var board: StyleBoard
+    var board: StyleBoard
     
     @State private var selectedItem: PhotosPickerItem?
     @State private var screenShots: [UIImage] = []

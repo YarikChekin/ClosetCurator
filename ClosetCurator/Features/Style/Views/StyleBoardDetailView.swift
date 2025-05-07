@@ -5,7 +5,7 @@ import PhotosUI
 struct StyleBoardDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject var board: StyleBoard
+    var board: StyleBoard
     
     @State private var showingImagePicker = false
     @State private var showingCamera = false
@@ -295,7 +295,6 @@ struct StyleBoardItemView: View {
     NavigationStack {
         StyleBoardDetailView(board: StyleBoard(
             name: "Summer Vibes",
-            description: "Light and airy summer styles",
             season: .summer,
             occasion: .casual,
             items: []

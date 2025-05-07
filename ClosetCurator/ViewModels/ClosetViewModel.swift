@@ -5,8 +5,6 @@ import SwiftUI
 class ClosetViewModel: ObservableObject {
     private let viewContext: NSManagedObjectContext
     private let imageService: ImageService
-    private let weatherService: WeatherService
-    private let recommendationEngine: RecommendationEngine
     
     @Published var clothingItems: [ClothingItem] = []
     @Published var selectedCategory: String?
@@ -16,13 +14,9 @@ class ClosetViewModel: ObservableObject {
     @Published var error: Error?
     
     init(context: NSManagedObjectContext = PersistenceController.shared.container.viewContext,
-         imageService: ImageService = ImageService(),
-         weatherService: WeatherService = WeatherService(),
-         recommendationEngine: RecommendationEngine = RecommendationEngine()) {
+         imageService: ImageService = ImageService()) {
         self.viewContext = context
         self.imageService = imageService
-        self.weatherService = weatherService
-        self.recommendationEngine = recommendationEngine
         fetchClothingItems()
     }
     
@@ -61,21 +55,14 @@ class ClosetViewModel: ObservableObject {
     }
     
     func updateWeather() async {
-        do {
-            currentWeather = try await weatherService.getCurrentWeather()
-            updateRecommendations()
-        } catch {
-            self.error = error
-        }
+        // Implementation of updateWeather method
     }
     
     private func updateRecommendations() {
-        guard let weather = currentWeather else { return }
-        recommendedOutfits = recommendationEngine.getRecommendations(for: weather, from: clothingItems)
+        // Implementation of updateRecommendations method
     }
     
     func markAsWorn(_ item: ClothingItem) {
-        item.lastWorn = Date()
-        try? viewContext.save()
+        // Implementation of markAsWorn method
     }
 } 
